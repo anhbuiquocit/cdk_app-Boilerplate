@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2018",
+      "esnext.asynciterable"
+    ],
+    "baseUrl": "./",
+    "outDir": "../../apps/infra/build/lambda_shared_folder/nodejs/node_modules/lambda_shared_folder",
+    "moduleResolution": "node",
+    "target": "es2018",
+    "module": "commonjs",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true
+  }
+}

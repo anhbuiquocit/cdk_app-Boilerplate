@@ -1,0 +1,11 @@
+{
+  "name": "create_prisma_client",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .turbo && rm -rf node_modules"
+  },
+  "dependencies": {
+    "@types/node": "^18.8.3"
+  }
+}

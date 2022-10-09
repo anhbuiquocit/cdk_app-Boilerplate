@@ -1,0 +1,13 @@
+{
+  "name": "lambda_shared_folder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .turbo && rm -rf node_modules"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
