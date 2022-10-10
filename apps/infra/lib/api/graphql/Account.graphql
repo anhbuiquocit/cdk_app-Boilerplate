@@ -1,0 +1,15 @@
+## AUTHENTICATE
+type Account @aws_cognito_user_pools {
+  cognitoId: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  deletedAt: AWSDateTime
+  accountName: String!
+  lastLogin: String
+  isActive: Boolean!
+  role: Role!
+  user: User
+  affiliatedClinic: AffiliatedClinic
+  admin: Admin
+  stem: StemCell
+}

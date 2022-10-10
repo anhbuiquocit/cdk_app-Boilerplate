@@ -1,19 +1,23 @@
 {
-    "name": "lambdas",
-    "version": "0.1.0",
-    "bin": "bin/infra.ts",
-    "scripts": {
-        "build": "tsc",
-        "test": "jest",
-        "lint": "eslint --fix",
-        "clean": "rm -rf .turbo"
-    },
-    "dependencies": {
-        "create_prisma_client": "workspace:^",
-        "lambda_shared_folder": "workspace:^"
-    },
-    "devDependencies": {
-        "@swc/core": "^1.3.6",
-        "@swc/jest": "^0.2.23"
-    }
+  "name": "lambdas",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "bin": "bin/infra.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint --fix",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "create_prisma_client": "workspace:^",
+    "lambda_shared_folder": "workspace:^"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.3.6",
+    "@swc/jest": "^0.2.23"
+  },
+  "author": "",
+  "license": "ISC"
 }

@@ -1,0 +1,91 @@
+##AUTHENTICATE
+##ROLE: ADMIN, USER
+type UserOldInfo @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  id: String!
+  email: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  lastName: String!
+  firstName: String!
+  lastNameKana: String!
+  firstNameKana: String!
+  fullName: String!
+  fullNameKana: String!
+  phoneNumber: String
+  birthday: AWSDateTime
+  workCompany: String
+  memberShipNumber: String
+  systemToUseType: CouponType!
+  postalCodeServiceCompany: String
+  otherDiscountServices: String
+  currentPostalCode: String
+  currentAddress1: String
+  currentAddress2: String
+  currentAddress3: String
+  deliveryPostalCode: String
+  deliveryAddress1: String
+  deliveryAddress2: String
+  deliveryAddress3: String
+  addressReceiveEmailType: AddressReceiveEmailType!
+  otherWelfareCompany: String
+  otherCompany: String
+  otherCouponCode: String
+  welfareUserCode: String
+  isBenefit: Boolean
+  isSubscribeNewsletter: Boolean
+  identityPaperBack: String
+  identityPaperFront: String
+  identityPaperType: IdentityPaperType!
+  otherPostCode: String
+  otherAddress1: String
+  otherAddress2: String
+  otherAddress3: String
+  otherBuildingName: String
+  userId: String!
+  scheduledClinicId: String
+  scheduledClinic: AffiliatedClinic
+  currentBuildingName: String
+  couponId: String
+  coupon: Coupon
+}
+
+input UserOldInfoWhereUniqueInput {
+  id: String
+}
+
+##AUTHENTICATE
+##ROLE: ADMIN, USER
+type UserOldInfoEdge
+  @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  node: UserOldInfo!
+  cursor: String!
+}
+
+##AUTHENTICATE
+##ROLE: ADMIN, USER
+type UserOldInfoConnection
+  @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  pageInfo: PageInfo!
+  edges: [UserOldInfoEdge!]!
+  totalCount: Int!
+}
+
+extend type Query {
+  ##AUTHENTICATE
+  ##ROLE: ADMIN, USER
+  ##ERROR: NOT_FOUND, UNAUTHORIZED
+  getUserOldInfo(where: UserOldInfoWhereUniqueInput!): UserOldInfo!
+    @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  ##AUTHENTICATE
+  ##ROLE: ADMIN
+  ##ERROR: NOT_FOUND, UNAUTHORIZED
+  getUserOldInfos(
+    where: UserOldInfoWhereInput
+    orderBy: [UserOldInfoOrderByInput!]
+    skip: Int
+    take: Int
+    cursor: UserOldInfoWhereUniqueInput
+  ): UserOldInfoConnection!
+    @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+}

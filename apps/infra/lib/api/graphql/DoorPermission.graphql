@@ -1,0 +1,41 @@
+enum DoorOpenPermission {
+  SHORT_OPEN
+  LONG_OPEN
+  NOT_ALLOWED
+}
+
+type DoorPermission @aws_cognito_user_pools {
+  cognitoUsername: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  doorId: Int!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime
+  type: DoorOpenPermission!
+}
+type DoorPermissionList @aws_cognito_user_pools {
+  items: [DoorPermission!]!
+  totalCount: Int!
+}
+type Query @aws_cognito_user_pools {
+  # allowed users data. Admin can get all.
+  # Errors:
+  # UserNotAllowed
+  # CognitoUsernameNotFound
+  # UserNotFoundException
+  adminDoorPermissions(cognitoUsername: String!): DoorPermissionList!
+}
+# type Mutation @aws_cognito_user_pools {
+#   # adds cognito userId as as allowed user to specific door
+#   # Errors:
+#   # UserNotAllowed
+#   # DoorNotFound
+#   # CognitoUsernameNotFound
+#   adminChangeDoorPermission(
+#     doorId: Int!
+#     cognitoUsername: ID!
+#     startTime: AWSDateTime
+#     endTime: AWSDateTime
+#     type: DoorOpenPermission!
+#   ): Boolean
+# }

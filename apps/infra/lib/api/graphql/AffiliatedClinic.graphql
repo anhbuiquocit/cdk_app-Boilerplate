@@ -1,0 +1,96 @@
+## NOT AUTHENTICATE
+type AffiliatedClinic @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  representativeDirector: String
+  clinicName: String!
+  email: AWSEmail!
+  phoneNumber: String
+  postalCode: String
+  address1: String
+  address2: String
+  address3: String
+  address4: String
+  address: String
+  transferFee: Float
+  accountId: String
+  website: String
+  status: AffiliatedClinicStatus!
+  ## AUTHENTICATE
+  ## ROLE: CLINIC, ADMIN
+  account: Account @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"])
+
+  ## AUTHENTICATE
+  ## ROLE: CLINIC, ADMIN
+  scheduledUsers: [UserPublic]
+    @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"])
+}
+
+input AffiliatedClinicWhereUniqueInput {
+  id: String
+  clinicName: String
+  email: AWSEmail
+}
+
+input UpdateAffiliatedClinicInput {
+  affiliatedClinicId: String!
+  representativeDirector: String!
+  clinicName: String!
+  phoneNumber: String!
+  postalCode: String!
+  address1: String!
+  address2: String!
+  address3: String
+  address4: String
+  website: String!
+  transferFee: Float!
+}
+
+input AdditionOfClinicInput {
+  clinicName: String!
+  email: AWSEmail!
+}
+
+## NOT AUTHENTICATE
+type AffiliatedClinicEdge @aws_cognito_user_pools @aws_api_key {
+  node: AffiliatedClinic!
+  cursor: String!
+}
+
+## NOT AUTHENTICATE
+type AffiliatedClinicConnection @aws_cognito_user_pools @aws_api_key {
+  pageInfo: PageInfo!
+  edges: [AffiliatedClinicEdge!]!
+  totalCount: Int!
+}
+
+extend type Query {
+  ## NOT AUTHENTICATE
+  getAffiliatedClinics(
+    where: AffiliatedClinicWhereInput
+    orderBy: [AffiliatedClinicOrderByInput!]
+    skip: Int
+    take: Int
+    cursor: AffiliatedClinicWhereUniqueInput
+  ): AffiliatedClinicConnection! @aws_cognito_user_pools @aws_api_key
+
+  ## NOT AUTHENTICATE
+  getAffiliatedClinic(
+    where: AffiliatedClinicWhereUniqueInput!
+  ): AffiliatedClinic! @aws_cognito_user_pools @aws_api_key
+}
+
+type Mutation {
+  ## AUTHENTICATE
+  ## ROLE: ADMIN
+  updateAffiliatedClinic(
+    updateAffiliatedClinicInput: UpdateAffiliatedClinicInput!
+  ): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  ## AUTHENTICATE
+  ## ROLE: ADMIN
+  adminAdditionOfClinic(
+    additionOfClinicInput: AdditionOfClinicInput!
+  ): Boolean! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+}

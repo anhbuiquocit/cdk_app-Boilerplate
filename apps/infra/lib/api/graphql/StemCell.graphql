@@ -1,0 +1,37 @@
+type StemCell {
+  id: String
+  lastName: String
+  firstName: String
+  lastNameKana: String
+  firstNameKana: String
+  phoneNumber: String
+  email: String
+  account: Account
+  stockMembers: [StockMember!]
+}
+
+type StemCellEdge @aws_cognito_user_pools {
+  node: StemCell!
+  cursor: String!
+}
+
+type StemCellConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [StemCellEdge!]!
+  totalCount: Int!
+}
+
+input StemCellWhereUniqueInput {
+  id: String
+}
+
+extend type Query {
+  ## AUTHENTICATE
+  getStemCells(
+    where: StemCellWhereInput
+    orderBy: [StemCellOrderByInput!]
+    skip: Int
+    take: Int
+    cursor: StemCellWhereUniqueInput
+  ): StemCellConnection! @aws_cognito_user_pools
+}

@@ -1,0 +1,62 @@
+## AUTHENTICATE
+type DocumentCloudSign @aws_cognito_user_pools {
+  id: String!
+  user_id: String!
+  title: String
+  note: String
+  message: String
+  status: Int
+  can_transfer: Boolean
+  private: Boolean
+  sent_at: AWSDateTime
+  last_processed_at: AWSDateTime
+  created_at: AWSDateTime
+  updated_at: AWSDateTime
+  participants: [Participants!]
+  files: [FileDocument!]
+}
+
+## AUTHENTICATE
+## ROLE: ADMIN, USER, CLINIC
+type CloudSignToken
+  @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER", "CLINIC"]) {
+  accessToken: String!
+  tokenType: String!
+  expiresIn: Int
+}
+
+## AUTHENTICATE
+## ROLE: ADMIN
+type Participants @aws_cognito_user_pools(cognito_groups: ["ADMIN"]) {
+  id: String!
+  email: String!
+  name: String!
+  organization: String
+  order: Int
+  status: Int
+  language_code: String
+  processed_at: AWSDateTime
+}
+
+type FileDocument {
+  id: String!
+  name: String!
+  order: Int
+  total_pages: Int
+}
+
+input CreateDocumentCloudSignInput {
+  key: String!
+  title: String!
+  note: String
+  message: String
+  canTransfer: Boolean
+  isPrivate: Boolean
+}
+
+extend type Query {
+  ## AUTHENTICATE
+  ## ROLE: ADMIN, USER, CLINIC
+  getCloudSignToken: CloudSignToken!
+    @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER", "CLINIC"])
+}

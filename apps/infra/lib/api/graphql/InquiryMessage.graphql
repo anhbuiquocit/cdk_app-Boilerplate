@@ -1,0 +1,52 @@
+type InquiryMessage @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  content: String!
+  isRead: Boolean!
+  fileUrl: String
+  keyFile: String
+  inquiryId: String!
+  inquiry: Inquiry
+  userId: String
+  adminId: String
+  user: User
+  admin: Admin
+}
+
+input CreateInquiryMessageInput {
+  inquiryId: String!
+  content: String!
+  keyFile: String
+}
+
+input UpdateInquiryMessageInput {
+  id: String!
+  content: String
+  isRead: Boolean
+  keyFile: String
+}
+
+extend type Mutation {
+  ## AUTHENTICATE
+  ## ROLE: ADMIN, USER
+  updateMessage(
+    updateInquiryMessageInput: UpdateInquiryMessageInput!
+  ): Boolean! @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  ## AUTHENTICATE
+  ## ROLE: ADMIN, USER
+  readMessages(inquiryId: String!): Boolean!
+    @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  ## AUTHENTICATE
+  ## ROLE: ADMIN, USER
+  createMessage(createMessageInput: CreateInquiryMessageInput!): InquiryMessage
+    @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+}
+
+type Subscription {
+  createdMessage(inquiryId: String!): InquiryMessage
+    @aws_cognito_user_pools
+    @aws_api_key
+    @aws_subscribe(mutations: ["createMessage"])
+}

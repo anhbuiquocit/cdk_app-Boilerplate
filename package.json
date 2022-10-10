@@ -14,8 +14,7 @@
   },
   "devDependencies": {
     "eslint-config-custom": "*",
-    "prettier": "latest",
-    "turbo": "^1.5.5"
+    "prettier": "latest"
   },
   "engines": {
     "node": "16.17.1",
@@ -30,6 +29,7 @@
     "husky": "^8.0.1",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
+    "turbo": "^1.5.5",
     "typescript": "^4.8.4"
   }
 }

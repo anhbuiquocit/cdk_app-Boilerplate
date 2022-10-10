@@ -1,0 +1,693 @@
+enum AccountScalarFieldEnum {
+  id
+  cognitoId
+  createdAt
+  updatedAt
+  deletedAt
+  accountName
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  birthday
+  postCode
+  address1
+  address2
+  address3
+  lastLogin
+  isActive
+  clinicName
+  role
+}
+
+enum AdminScalarFieldEnum {
+  id
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  phoneNumber
+  email
+  accountId
+}
+
+enum StemCellScalarFieldEnum {
+  id
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  phoneNumber
+  email
+  accountId
+}
+
+enum UserScalarFieldEnum {
+  id
+  email
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  fullNameKana
+  phoneNumber
+  initialPhoneNumber
+  birthday
+  temporarySignUpDate
+  permanentSignUpDate
+  workCompany
+  memberShipNumber
+  systemToUseType
+  postalCodeServiceCompany
+  otherDiscountServices
+  currentPostalCode
+  currentAddress1
+  currentAddress2
+  currentAddress3
+  currentBuildingName
+  currentAddress
+  deliveryPostalCode
+  deliveryAddress1
+  deliveryAddress2
+  deliveryAddress3
+  deliveryBuildingName
+  deliveryAddress
+  addressReceiveEmailType
+  otherWelfareCompany
+  otherCompany
+  billPlan
+  otherCouponCode
+  welfareUserCode
+  isBenefit
+  isSubscribeNewsletter
+  isDeleveryAddress
+  identityPaperBack
+  identityPaperFront
+  identityPaperType
+  otherPostCode
+  otherAddress1
+  otherAddress2
+  otherAddress3
+  otherBuildingName
+  otherAddress
+  scheduledClinicId
+  signDocumentDate
+  status
+  accountId
+  couponId
+  isSaveCard
+}
+
+enum UserOldInfoScalarFieldEnum {
+  id
+  email
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  fullNameKana
+  phoneNumber
+  birthday
+  workCompany
+  memberShipNumber
+  systemToUseType
+  postalCodeServiceCompany
+  otherDiscountServices
+  billPlan
+  currentPostalCode
+  currentAddress1
+  currentAddress2
+  currentAddress3
+  currentBuildingName
+  deliveryPostalCode
+  deliveryAddress1
+  deliveryAddress2
+  deliveryAddress3
+  deliveryBuildingName
+  addressReceiveEmailType
+  otherWelfareCompany
+  otherCompany
+  otherCouponCode
+  welfareUserCode
+  isBenefit
+  isSubscribeNewsletter
+  identityPaperBack
+  identityPaperFront
+  identityPaperType
+  otherPostCode
+  otherAddress1
+  otherAddress2
+  otherAddress3
+  otherBuildingName
+  scheduledClinicId
+  userId
+  couponId
+}
+
+enum AffiliatedClinicScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  representativeDirector
+  clinicName
+  email
+  phoneNumber
+  postalCode
+  address1
+  address2
+  address3
+  address4
+  address
+  website
+  prefectures
+  municipalities
+  buildingName
+  transferFee
+  status
+  accountId
+  updatedById
+}
+
+enum InquiryScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  inquiryUsername
+  email
+  phoneNumber
+  inquiryType
+  content
+  status
+  isUserReceiveNotification
+  isAdminReceiveNotification
+  conversationUpdatedAt
+  createdByUserId
+  takeCareByAdminId
+}
+
+enum InquiryMessageScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  content
+  isRead
+  keyFile
+  inquiryId
+  userId
+  adminId
+}
+
+enum EggApplicantScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  remarks
+  eggCollectionTime
+  eggCollectionPlanDate
+  identityPaperType
+  identityPaperFront
+  identityPaperBack
+  isLast
+  status
+  clinicId
+  appliedUserId
+}
+
+enum EggCollectionReportScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  eggCollectionDate
+  eggFreezingDate
+  eggCollectionTime
+  eggCollectionUserDate
+  lastStockedDate
+  eggQuantity
+  noKens
+  noDevices
+  eggApplicantId
+}
+
+enum KenScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  barCode
+  scheduleTransferDate
+  startTime
+  endTime
+  status
+  eggKitTranportId
+  eggCollectionReportId
+}
+
+enum DeviceScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  barCode
+  kenBarcode
+  eggCollectionReportId
+}
+
+enum EggScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  index
+  grade
+  kenBarcode
+  deviceBarcode
+  eggCollectionReportId
+}
+
+enum FileScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  fileName
+  key
+  description
+  userId
+  eggCollectionReportId
+}
+
+enum StockInfoScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  stockinPlanDateStart
+  stockinPlanDateEnd
+  stockoutPlanDateStart
+  stockoutPlanDateEnd
+  stockinPlanDate
+  stockinStartTime
+  stockinEndTime
+  stockoutPlanDate
+  stockoutStartTime
+  stockoutEndTime
+  barCode
+  eggApplicantId
+  kenId
+  appliedById
+  status
+  tankInfo
+  eggTransportRequestId
+  destinationClinicId
+}
+
+enum EggKitTransportationScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  documentSendDate
+  barcodeSheetCount
+  eggApplicantId
+}
+
+enum EggTransportRequestScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  destinationClinicId
+  requestById
+}
+
+enum EggTransportRequestKenScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  kenId
+  eggTransportRequestId
+  clinicStatus
+  adminStatus
+  expectedAcceptanceDate
+  personInChargeId
+  clinicDocumentId
+  scheduledDeliveryDate
+  startTime
+  endTime
+  expectedUseDate
+  userDocumentId
+  isConfirmedSpermTestByClinic
+  isExplainedByClinic
+  isConfirmedSpermTestByUser
+  isConfirmedStorageFeeByUser
+}
+
+enum PersonInChargeScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  fullName
+  lastNameKana
+  fullNameKana
+  firstNameKana
+  clinicId
+}
+
+enum BillingScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  total
+  amount
+  discount
+  billingDate
+  paidDate
+  lastBillingDate
+  status
+  eggApplicantId
+  appliedById
+  eggTransportRequestId
+  kenQuantity
+}
+
+enum BillingItemScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  billingId
+  billingType
+  total
+  amount
+  discount
+  kenQuantity
+  kenPrice
+  couponId
+  description
+}
+
+enum AreaScalarFieldEnum {
+  code
+  region
+  prefecture
+  prefectureKana
+  city
+  cityKana
+  address1
+  address1Kana
+}
+
+enum StockMemberScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  fullNameKana
+  stemCellId
+}
+
+enum DocumentScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  keyFile
+  fileId
+  description
+  storageType
+  type
+  createdByUserId
+  status
+}
+
+enum CouponScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  type
+  benefitName
+  companyCode
+  discount
+}
+
+enum PaymentSubscriptionScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  userId
+  paymentDate
+  billPlan
+  status
+  eggApplicantId
+  kenQuantity
+}
+
+enum PaymentTransactionScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  amount
+  transactionId
+  trackingId
+  subscriptionId
+  errorCode
+  response
+  billingId
+  type
+  status
+}
+
+enum SystemConfigScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  type
+  key
+  value
+  numberValue
+}
+
+enum VerifyTokenScalarFieldEnum {
+  id
+  createdByUserId
+  createdAt
+  updatedAt
+  deletedAt
+  token
+  lastEmail
+  newEmail
+  bizType
+}
+
+enum Role {
+  ADMIN
+  USER
+  CLINIC
+  STEMCELL
+}
+
+enum CouponType {
+  CHOICE_DISPLAY
+  WELFARE_AT_WORK
+  OTHERS
+}
+
+enum AddressReceiveEmailType {
+  RESIDENCE_CARD_ADDRESS
+  CURRENT_ADDRESS
+  OTHERS
+}
+
+enum BillPlan {
+  ANNUAL_PLAN
+  ANNUAL_PLAN_1
+  MONTHLY_PLAN
+}
+
+enum IdentityPaperType {
+  DRIVER_LICENSE
+  DRIVING_HISTORY_CERTIFICATE
+  PASSPORT
+  MY_NUMBER_CARD
+  BASIC_RESIDENT_REGISTER_CARD
+  HANDICAPPED_PERSON_NOTEBOOK
+  RESIDENCE_CARD
+  SPECIAL_PERMANENT_RESIDENT_CERTIFICATE
+}
+
+enum UserStatus {
+  WAIT_PERMANENT_REGISTER
+  WAIT_EGG_APPLICANT_CONTRACT_REQUEST
+  WAIT_SIGN_EGG_APPLICANT_CONTRACT
+  COMPLETED_SIGNING_EGG_CONTRACT
+  COMPLETED_SIGNING_STORAGE_PROCEDURE_CONTRACT
+  CANCELED
+}
+
+enum AffiliatedClinicStatus {
+  REGISTERED
+  WAIT_FOR_REGISTRATION
+}
+
+enum InquiryType {
+  STORAGE_TERMINATION_PROCEDURE
+  AFFILIATED_CLINIC
+  EGG_COLLECTION
+  STOREAGE
+  FEES
+  AGREEMENT
+  USE_OF_FROZEN_EGGS
+  OTHERS
+}
+
+enum InquiryStatus {
+  PROCESSING
+  COMPLETED
+  NOT_YET
+}
+
+enum EggApplicantStatus {
+  BEFORE_SENDING_THE_EGG_COLLECTION_KIT
+  WAIT_CLINIC_EGG_COLLECTION_REPORT
+  WAIT_USER_EGG_COLLECTION_REPORT
+  EGG_COLLECTED_OR_BEFORE_BILLING
+  COMPLETED_BILLING_OR_WAIT_FOR_STOCK_RECEIVE
+  CONFIRM_DATE_STOCK_RECEIVE
+  RECEIVED_OR_WAIT_CONTRACT
+  RECEIVED_OR_COMPLETED_CONTRACT
+  DELIVERY_DATE_CONFIRMED
+  PARTIAL_STOCK_OUT
+  ALL_STOCK_OUT
+  CANCELED
+}
+
+enum KenTransferStatus {
+  INIT
+  WAIT_FOR_WAREHOUSING
+  RECEIPT_DATE_CONFIRMED
+  WAIT_FOR_TRANSFER
+  TRANSFERRED
+  WAIT_CLINIC_CONFIRM
+  WAIT_FOR_DELIVERY
+  ISSUE_DATE_CONFIRMED
+  DELIVERED
+}
+
+enum EggGrade {
+  MII
+  MI
+  GV
+}
+
+enum StockInfoStatus {
+  WAIT_FOR_STOCK_IN
+  STOCK_IN
+  WAIT_FOR_STOCK_OUT
+  STOCK_OUT
+}
+
+enum EggTransportRequestStatusClinicSide {
+  WAIT_FOR_CONFIRMATION_CLINIC_SIDE
+  WAIT_FOR_MANAGEMENT_APPROVAL
+  APPROVED_BY_MANAGEMENT_OR_WAIT_FOR_STEM_CELL_ISSUE_PROCESSING
+  STEM_CELL_ISSUE_PROCESSING_CONFIRMED
+  CLINIC_ACCEPTED
+}
+
+enum EggTransportRequestStatusAdminSide {
+  WAIT_FOR_DELIVERY
+  ISSUE_DATE_CONFIRMED
+  CANCEL
+}
+
+enum BillingStatus {
+  WAITING_BILLING
+  PROCESSING
+  CONFIRMED
+  PAID
+  SYSTEM_ERROR
+  SOFTBANK_ERROR
+}
+
+enum BillingType {
+  INITIAL_BILLING
+  STOCK_OUT_BILLING
+  EGG_APPLICANT_BILLING
+}
+
+enum DocumentStorageType {
+  CLOUDSIGN
+  S3
+}
+
+enum DocumentType {
+  FROZEN_EGG_STORAGE_CONSIGNMENT_CONTRACT
+  FREEZING_CONSENT_FORM_FOR_EGG_COLLECTION
+  FROZEN_EGG_TRANSFER_CONTRACT
+  EGG_APPLICANT_BEFORE_BEING_SIGNED
+  EGG_APPLICANT_AFTER_BEING_SIGNED
+  EGG_APPLICANT_CONTRACT
+}
+
+enum EggApplicantContractStatus {
+  UNSIGNED
+  SIGNED
+  REJECTED
+  CANCELED
+  OTHERS
+}
+
+enum SubscriptionStatus {
+  WAITING
+  RETRY
+  CANCELED
+}
+
+enum PaymentTransactionType {
+  REQUEST
+  CONFIRM
+  PURCHASE
+}
+
+enum PaymentTransactionStatus {
+  SUCCESS
+  FAILURE
+}
+
+enum SystemConfigType {
+  SYSTEM_CONFIG
+  PRICE_CONFIG
+}
+
+enum UpdateType {
+  CHANGE_EMAIL
+}
+

@@ -1,0 +1,87 @@
+enum PriceConfig {
+  INIT_FEE_FIRST_YEAR
+  PRICE_PER_KEN_YEARLY_WITH_FEE
+  PRICE_PER_KEN_YEARLY_WITHOUT_FEE
+  PRICE_PER_KEN_MONTHLY
+  PRICE_PER_KEN_STOCK_OUT
+  WELFARE_CLUB
+  BENEFIT_STATION
+  PERK
+  WELBOX
+  SELECT_CLUB
+  KANSAI_ELECTRIC_PORWER
+  WELFARE_AT_WORK
+  OTHERS
+}
+
+type PaymentSubscription @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  user: User
+  paymentDate: AWSDateTime
+  eggApplicant: EggApplicant
+  status: SubscriptionStatus
+  kenQuantity: Int
+  transactions: [PaymentTransaction!]
+}
+
+type PaymentTransaction @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  amount: Float
+  transactionId: String
+  trackingId: String
+  subscription: PaymentSubscription
+  billing: Billing
+  type: PaymentTransactionType
+}
+
+type PaymentCreditCard @aws_cognito_user_pools {
+  cardNumber: String
+  cardExpiration: String
+  cardBrand: String
+}
+
+type BillingAmount @aws_cognito_user_pools {
+  price: Float
+  amount: Float
+  total: Float
+  discount: Float
+  feeAmount: Float
+  totalFeeAmount: Float
+  kenNumber: Float
+  coupon: Coupon
+  totalBillAmount: Float
+}
+
+input PaymentCreditCardInput {
+  isCreate: Boolean!
+  token: String!
+  tokenKey: String!
+}
+
+input BillingAmountInput {
+  eggApplicantId: String!
+  billPlan: BillPlan!
+}
+
+extend type Mutation {
+  ## AUTHENTICATION
+  ## ROLE USER
+  modifyCreditCard(
+    modifyCreditCardInput: PaymentCreditCardInput!
+  ): PaymentCreditCard @aws_cognito_user_pools(cognito_groups: ["USER"])
+}
+
+extend type Query {
+  ## AUTHENTICATION
+  ## ROLE USER
+  getCreditCard: PaymentCreditCard
+    @aws_cognito_user_pools(cognito_groups: ["USER"])
+  getBillingAmount(where: BillingAmountInput!): BillingAmount
+    @aws_cognito_user_pools(cognito_groups: ["USER"])
+}

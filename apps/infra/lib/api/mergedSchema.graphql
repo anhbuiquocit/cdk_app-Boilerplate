@@ -1,0 +1,4439 @@
+
+# # AUTHENTICATE
+type Account @aws_cognito_user_pools {
+  cognitoId: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  deletedAt: AWSDateTime
+  accountName: String!
+  lastLogin: String
+  isActive: Boolean!
+  role: Role!
+  user: User
+  affiliatedClinic: AffiliatedClinic
+  admin: Admin
+  stem: StemCell
+}
+
+
+# # AUTHENTICATE
+type Admin @aws_cognito_user_pools {
+  id: String!
+  lastName: String
+  firstName: String
+  lastNameKana: String
+  firstNameKana: String
+  fullName: String
+  phoneNumber: String
+  email: String
+  takeCareInquiries: [Inquiry!]
+}
+
+type AdminPublic @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  lastName: String
+  firstName: String
+  lastNameKana: String
+  firstNameKana: String
+  fullName: String
+  phoneNumber: String
+  email: String
+}
+
+input AdminWhereUniqueInput {
+  id: String!
+}
+
+type Query {
+  getAdmins(where: AdminWhereInput, orderBy: [AdminOrderByInput!], skip: Int, take: Int, cursor: AdminWhereUniqueInput): [AdminPublic!] @aws_cognito_user_pools
+  getAffiliatedClinics(where: AffiliatedClinicWhereInput, orderBy: [AffiliatedClinicOrderByInput!], skip: Int, take: Int, cursor: AffiliatedClinicWhereUniqueInput): AffiliatedClinicConnection! @aws_cognito_user_pools @aws_api_key
+  getAffiliatedClinic(where: AffiliatedClinicWhereUniqueInput!): AffiliatedClinic! @aws_cognito_user_pools @aws_api_key
+  getAreas(where: AreaWhereInput, distinct: [AreaScalarFieldEnum!], orderBy: AreaOrderByInput, skip: Int, take: Int, cursor: AreaWhereUniqueInput): [Area!] @aws_cognito_user_pools @aws_api_key
+  getArea(where: AreaWhereUniqueInput!): Area! @aws_cognito_user_pools @aws_api_key
+  
+  # # AUTHENTICATE
+  # # ROLE: USER
+  userMe: User! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: CLINIC
+  clinicMe: AffiliatedClinic! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  getBillings(where: BillingWhereInput, orderBy: [BillingOrderByInput!], skip: Int, take: Int, cursor: BillingWhereUniqueInput): BillingConnection! @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  getBilling(where: BillingWhereUniqueInput!): Billing! @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  downloadSalesManagementCsv(where: BillingWhereInput): String! @aws_cognito_user_pools
+  getUserNextBilling(where: UserGetNextBillingInput): NextBilling! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  getBillingEarnings(where: BillingWhereInput): BillingEarnings! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  getCoupon(where: CouponWhereUniqueInput!): Coupon! @aws_cognito_user_pools @aws_api_key
+  getCoupons(where: CouponWhereInput, skip: Int, take: Int, orderBy: [CouponOrderByInput!], distinct: [CouponScalarFieldEnum!], cursor: CouponWhereUniqueInput): CouponConnection! @aws_cognito_user_pools @aws_api_key
+  getDevices(where: DeviceWhereInput, customWhere: CustomEggWhereInput, orderBy: [DeviceOrderByInput!], skip: Int, take: Int, cursor: DeviceWhereUniqueInput): DeviceConnection! @aws_cognito_user_pools
+  getDevice(where: DeviceWhereUniqueInput!): Device! @aws_cognito_user_pools
+  getDocuments(where: DocumentWhereInput, skip: Int, take: Int, orderBy: [DocumentOrderByInput!], cursor: DocumentWhereUniqueInput): DocumentConnection! @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  getCloudSignToken: CloudSignToken! @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER", "CLINIC"])
+  getEggApplicants(where: EggApplicantWhereInput, orderBy: [EggApplicantOrderByInput!], skip: Int, take: Int, cursor: EggApplicantWhereUniqueInput): EggApplicantConnection! @aws_cognito_user_pools
+  getEggApplicant(where: EggApplicantWhereUniqueInput!): EggApplicant! @aws_cognito_user_pools
+  getEggCollectionTimes(where: EggCollectionTimeWhereInput): EggCollectionTimes! @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"])
+  getEggApplicantOnProcess: EggApplicant @aws_cognito_user_pools(cognito_groups: ["USER"])
+  getEggCollectionReports(where: EggCollectionReportWhereInput, customWhere: CustomDeviceWhereInput, orderBy: [EggCollectionReportOrderByInput!], skip: Int, take: Int, cursor: EggCollectionReportWhereUniqueInput): EggCollectionReportConnection! @aws_cognito_user_pools
+  getEggCollectionReport(where: EggCollectionReportWhereUniqueInput!): EggCollectionReport!
+  getEggKitTransportations(where: EggKitTransportationWhereInput, orderBy: [EggKitTransportationOrderByInput!], skip: Int, take: Int, cursor: EggKitTransportationWhereUniqueInput): EggKitTransportationConnection! @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"])
+  getEggKitTransportation(where: EggKitTransportationWhereUniqueInput!): EggKitTransportation! @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"])
+  getEggTransportRequests(where: EggTransportRequestKenWhereInput, orderBy: [EggTransportRequestOrderByInput!], skip: Int, take: Int, cursor: EggTransportRequestWhereUniqueInput): EggTransportRequestConnection! @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"])
+  getEggTransportRequest(where: EggTransportRequestWhereUniqueInput!): EggTransportRequest! @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"])
+  getInquiries(where: InquiryWhereInput, orderBy: [InquiryOrderByInput!], skip: Int, take: Int, cursor: InquiryWhereUniqueInput): InquiryConnection! @aws_cognito_user_pools
+  getInquiry(where: InquiryWhereUniqueInput!): Inquiry! @aws_cognito_user_pools
+  getKens(where: KenWhereInput, customWhere: CustomEggWhereInput, orderBy: [KenOrderByInput!], skip: Int, take: Int, cursor: KenWhereUniqueInput): KenConnection! @aws_cognito_user_pools
+  getKen(where: KenWhereUniqueInput!): Ken! @aws_cognito_user_pools
+  downloadTransferKenCsv(kenIds: [String!]!): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  getCreditCard: PaymentCreditCard @aws_cognito_user_pools(cognito_groups: ["USER"])
+  getBillingAmount(where: BillingAmountInput!): BillingAmount @aws_cognito_user_pools(cognito_groups: ["USER"])
+  getPersonInCharge(where: PersonInChargeWhereUniqueInput!): PersonInCharge! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  getPersonInCharges(where: PersonInChargeWhereInput, orderBy: PersonInChargeOrderByInput, skip: Int, take: Int, cursor: PersonInChargeWhereUniqueInput): PersonInChargeConnection! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  getAdressFromPostCode(code: String!): PostCode! @aws_cognito_user_pools @aws_api_key
+  getStemCells(where: StemCellWhereInput, orderBy: [StemCellOrderByInput!], skip: Int, take: Int, cursor: StemCellWhereUniqueInput): StemCellConnection! @aws_cognito_user_pools
+  getEggStockInfo(where: StockInfoWhereUniqueInput!): StockInfo! @aws_cognito_user_pools
+  getEggStockInfos(where: StockInfoWhereInput, orderBy: [StockInfoOrderByInput!], skip: Int, take: Int, cursor: StockInfoWhereUniqueInput): StockInfoConnection! @aws_cognito_user_pools
+  getStockMember(where: StockMemberWhereUniqueInput): StockMember! @aws_cognito_user_pools
+  getStockMembers(where: StockMemberWhereInput, orderBy: [StockMemberOrderByInput!], skip: Int, take: Int, cursor: StockMemberWhereUniqueInput): StockMemberConnection! @aws_cognito_user_pools
+  getAccountInfo(email: String!): AccountInfoOutput
+  getUsers(where: UserWhereInput, orderBy: [UserOrderByInput!], skip: Int, take: Int, cursor: UserWhereUniqueInput): UserConnection! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  getUser(where: UserWhereUniqueInput!): User! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  downloadFileFromS3(key: String!): String! @aws_cognito_user_pools @aws_api_key
+  queryTestReturn: Boolean!
+  getUserOldInfo(where: UserOldInfoWhereUniqueInput!): UserOldInfo! @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  getUserOldInfos(where: UserOldInfoWhereInput, orderBy: [UserOldInfoOrderByInput!], skip: Int, take: Int, cursor: UserOldInfoWhereUniqueInput): UserOldInfoConnection! @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+}
+
+
+# # NOT AUTHENTICATE
+type AffiliatedClinic @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  representativeDirector: String
+  clinicName: String!
+  email: AWSEmail!
+  phoneNumber: String
+  postalCode: String
+  address1: String
+  address2: String
+  address3: String
+  address4: String
+  address: String
+  transferFee: Float
+  accountId: String
+  website: String
+  status: AffiliatedClinicStatus!
+  
+  # # AUTHENTICATE
+  # # ROLE: CLINIC, ADMIN
+  account: Account @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"])
+  
+  # # AUTHENTICATE
+  # # ROLE: CLINIC, ADMIN
+  scheduledUsers: [UserPublic] @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"])
+}
+
+input AffiliatedClinicWhereUniqueInput {
+  id: String
+  clinicName: String
+  email: AWSEmail
+}
+
+input UpdateAffiliatedClinicInput {
+  affiliatedClinicId: String!
+  representativeDirector: String!
+  clinicName: String!
+  phoneNumber: String!
+  postalCode: String!
+  address1: String!
+  address2: String!
+  address3: String
+  address4: String
+  website: String!
+  transferFee: Float!
+}
+
+input AdditionOfClinicInput {
+  clinicName: String!
+  email: AWSEmail!
+}
+
+
+# # NOT AUTHENTICATE
+type AffiliatedClinicEdge @aws_cognito_user_pools @aws_api_key {
+  node: AffiliatedClinic!
+  cursor: String!
+}
+
+
+# # NOT AUTHENTICATE
+type AffiliatedClinicConnection @aws_cognito_user_pools @aws_api_key {
+  pageInfo: PageInfo!
+  edges: [AffiliatedClinicEdge!]!
+  totalCount: Int!
+}
+
+type Mutation {
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN
+  updateAffiliatedClinic(updateAffiliatedClinicInput: UpdateAffiliatedClinicInput!): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN
+  adminAdditionOfClinic(additionOfClinicInput: AdditionOfClinicInput!): Boolean! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  
+  # adds cognito userId as as allowed user to specific door
+  # Errors:
+  signUp(email: String!, firstName: String!, lastName: String!, firstNameKana: String!, lastNameKana: String!): SignUpResponse!
+  logIn(email: String!, password: String!): Token!
+  signout: Boolean! @aws_cognito_user_pools
+  userCreateEggApplicantBilling(userCreateEggApplicantBillingInput: UserCreateEggApplicantBillingInput!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  adminUpdateStatusBilling(adminUpdateStatusBillingInPut: AdminUpdateStatusBillingInPut!): BillingStatus! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  userRepurchaseBilling(userCreateEggApplicantBillingInput: UserCreateEggApplicantBillingInput!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  signupClinic(ClinicSignUpInput: ClinicSignUpInput!): ClinicSignUpResponse!
+  permanentRegisterClinic(data: RegisterClinicInput!): PermanentRegisterResponse!
+  createCoupon(data: CreateCouponInput!): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  updateCoupon(id: String!, data: UpdateCouponInput!): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  deleteCoupon(id: String!): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  userCreateDocument(keyFile: String!, fileId: String!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: USER, CLINIC, ADMIN
+  createDocumentCloudSign(createDocumentCloudSignInput: CreateDocumentCloudSignInput!): DocumentCloudSign! @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"])
+  
+  # # AUTHENTICATE
+  # # ROLE: USER
+  createEggApplicant(createEggApplicantInput: CreateEggApplicantInput!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: USER, CLINIC
+  updateEggApplicant(updateEggApplicantInput: UpdateEggApplicantInput!): EggApplicant! @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC"]) @deprecated(reason: "Not used")
+  
+  # AUTHENTICATE
+  # ROLE: CLINIC
+  clinicCreateEggCollectionReport(clinicCreateEggCollectionReportInput: ClinicCreateEggCollectionReportInput!): EggCollectionReport! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  
+  # AUTHENTICATE
+  # ROLE: USER
+  userCreateEggCollectionReport(userCreateEggCollectionReportInput: UserCreateEggCollectionReportInput!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  createEggKitTransportation(createEggKitTransportationInput: CreateEggKitTransportationInput!): EggKitTransportation! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  adminUpdateEggKitTransportStatus(data: AdminUpdateEggKitTransportStatusInput!): Boolean! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  
+  # # AUTHENTICATE
+  # # ROLE: USER
+  createEggTransportRequest(createEggTransportRequestInput: CreateEggTransportRequestInput!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: CLINIC
+  clinicConfirmEggTransportRequest(clinicConfirmEggTransportRequestInput: ClinicConfirmEggTransportRequestInput!): String! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  
+  # # AUTHENTICATE
+  # # ROLE: CLINIC
+  clinicAcceptEggTransportRequest(clinicAcceptEggTransportRequestInput: ClinicAcceptEggTransportRequestInput!): Boolean! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  
+  # AUTHENTICATE
+  # ROLE: ADMIN
+  adminUpdateEggTransportRequest(adminUpdateEggTransportRequestInput: AdminUpdateEggTransportRequestInput): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  createInquiry(createInquiryInput: CreateInquiryInput!): String @aws_cognito_user_pools @aws_api_key
+  userCreateInquiry(data: UserCreateInquiryInput!): String @aws_cognito_user_pools(cognito_groups: ["USER"])
+  adminUpdateStatusInquiry(adminUpdateStatusInquiryInput: AdminUpdateStatusInquiryInput!): Boolean! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  updateMessage(updateInquiryMessageInput: UpdateInquiryMessageInput!): Boolean! @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  readMessages(inquiryId: String!): Boolean! @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  createMessage(createMessageInput: CreateInquiryMessageInput!): InquiryMessage @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  
+  # # AUTHENTICATE
+  # # ROLE: CLINIC
+  clinicScheduleTransferDateForKen(clinicScheduleTransferDateForKenInput: ClinicScheduleTransferDateForKenInput): Boolean! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN
+  adminUpdateTransfer(adminUpdateTransferInput: AdminUpdateTransferInput): Boolean! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  modifyCreditCard(modifyCreditCardInput: PaymentCreditCardInput!): PaymentCreditCard @aws_cognito_user_pools(cognito_groups: ["USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: CLINIC
+  createPersonInCharge(createPersonInChargeInput: CreatePersonInChargeInput!): String! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  updatePersonInCharge(updatePersonInChargeInput: UpdatePersonInChargeInput!): PersonInCharge! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  deletePersonInCharge(deletePersonInChargeInput: PersonInChargeWhereUniqueInput!): String! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  updateEggStockInfo(updateEggStockInfoInput: UpdateEggStockInfoInput!): StockInfo! @aws_cognito_user_pools
+  createStockMember(createStockMemberInput: StockMemberCreateInput): String @aws_cognito_user_pools
+  updateStockMember(updateStockMemberInput: StockMemberUpdateInput): StockMember! @aws_cognito_user_pools
+  deleteStockMember(deleteStockMemberInput: StockMemberWhereUniqueInput): String @aws_cognito_user_pools
+  permanentRegister(data: PermanentRegisterInput!): Boolean!
+  createPresignURL(fileName: String!): String! @aws_cognito_user_pools @aws_api_key
+  createPresignURLWithFolder(fileName: String!, folderName: String!): String!
+  forgotPassword(email: String!): Boolean!
+  resetPassword(email: String!, newPassword: String!): Boolean!
+  userTerminateContract(userTerminateContractInput: UserTerminateContractInput!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  updateUserInfor(data: UserUpdateData!): Boolean! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  adminUpdateUserInfo(data: AdminUpdateUserInfoInput!): Boolean! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  userDeleteAccount(reasonType: UserDeleteAccountReasonType!): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  userUpdateEmail(token: String!): Boolean! @aws_cognito_user_pools(cognito_groups: ["USER"]) @aws_api_key
+  userCheckTokenUpdateMailIsValid(token: String!): Boolean! @aws_cognito_user_pools @aws_api_key
+}
+
+
+# NOT AUTHENTICATE
+type Area @aws_cognito_user_pools @aws_api_key {
+  code: String!
+  region: String!
+  prefecture: String!
+  prefectureKana: String!
+  city: String!
+  cityKana: String!
+  address1: String!
+  address1Kana: String!
+}
+
+input AreaWhereUniqueInput {
+  code: String!
+}
+
+type Token {
+  token: String!
+  idToken: String!
+  refreshToken: String
+  expiredAt: Int!
+  userGroup: String!
+}
+
+type SignUpResponse {
+  id: String!
+  email: String!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: USER, ADMIN
+type Billing @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"]) {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  total: Float!
+  amount1: Float
+  amount2: Float
+  reduceFee1: Float
+  reduceFee2: Float
+  billingDate: AWSDateTime
+  lastBillingDate: AWSDateTime
+  billingType: BillingType
+  status: BillingStatus!
+  description: String
+  eggApplicant: EggApplicant
+  appliedById: String!
+  appliedBy: User
+  discount: Float
+  amountWithoutTax: Float
+  tax: Float
+  stockInfos(where: StockInfoWhereInput, orderBy: [StockInfoOrderByInput!], skip: Int, take: Int): [StockInfo!] @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+  transactions(where: PaymentTransactionWhereInput, orderBy: [PaymentTransactionOrderByInput!], skip: Int, take: Int): [PaymentTransaction!] @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"])
+}
+
+type NextBilling @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"]) {
+  eggCollectionTime: Int
+  billPlan: BillPlan
+  price: Float
+  nextBillingDate: AWSDateTime
+  description: String
+}
+
+type BillingEarnings @aws_cognito_user_pools(cognito_groups: ["ADMIN"]) {
+  totalCases: Int
+  countPeoPle: Int
+  totalEarning: Float
+}
+
+input UserGetNextBillingInput {
+  eggApplicantId: String
+}
+
+input UserCreateEggApplicantBillingInput {
+  eggApplicantId: String!
+  billPlan: BillPlan!
+}
+
+input AdminUpdateStatusBillingInPut {
+  id: String!
+  status: BillingStatus!
+}
+
+input BillingWhereUniqueInput {
+  id: String
+}
+
+
+# # AUTHENTICATE
+# # ROLE: USER, ADMIN
+type BillingEdge @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"]) {
+  node: Billing!
+  cursor: String!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: USER, ADMIN
+type BillingConnection @aws_cognito_user_pools(cognito_groups: ["USER", "ADMIN"]) {
+  pageInfo: PageInfo!
+  edges: [BillingEdge!]!
+  totalCount: Int!
+}
+
+input RegisterClinicInput {
+  representativeDirector: String!
+  clinicName: String!
+  emailClinic: AWSEmail!
+  password: String!
+  phoneNumber: String!
+  postalCode: String!
+  prefectures: String
+  municipalities: String
+  buildingName: String
+  address1: String!
+  address2: String!
+  address3: String!
+  address4: String!
+}
+
+input ClinicSignUpInput {
+  clinicName: String!
+  email: AWSEmail!
+}
+
+type PermanentRegisterResponse {
+  id: String
+}
+
+type ClinicSignUpResponse {
+  id: String
+  email: AWSEmail
+}
+
+
+# # NOT AUTHENTICATE
+type Coupon @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  type: CouponType!
+  benefitName: String!
+  companyCode: String
+  discount: Float!
+}
+
+input CouponWhereUniqueInput {
+  id: String!
+}
+
+
+# # NOT AUTHENTICATE
+type CouponEdge @aws_cognito_user_pools @aws_api_key {
+  node: Coupon!
+  cursor: String!
+}
+
+
+# # NOT AUTHENTICATE
+type CouponConnection @aws_cognito_user_pools @aws_api_key {
+  pageInfo: PageInfo!
+  edges: [CouponEdge!]!
+  totalCount: Int!
+}
+
+input CreateCouponInput {
+  type: CouponType!
+  benefitName: String!
+  companyCode: String
+  discount: Float!
+}
+
+input UpdateCouponInput {
+  type: CouponType!
+  benefitName: String!
+  companyCode: String
+  discount: Float!
+}
+
+
+# # AUTHENTICATE
+type Device @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  barCode: String!
+  noEggs: Int
+  kenBarcode: String!
+  ken: Ken!
+  eggCollectionReportId: String
+  eggCollectionReport: EggCollectionReport
+  eggs: [Egg!]
+}
+
+input CustomEggWhereInput {
+  all: Boolean!
+}
+
+input DeviceWhereUniqueInput {
+  id: String
+  barCode: String
+}
+
+
+# # AUTHENTICATE
+type DeviceEdge @aws_cognito_user_pools {
+  node: Device!
+  cursor: String!
+}
+
+
+# # AUTHENTICATE
+type DeviceConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [DeviceEdge!]!
+  totalCount: Int!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: ADMIN, USER
+type Document @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  keyFile: String!
+  fileId: String
+  fileUrl: String
+  description: String
+  status: EggApplicantContractStatus
+  storageType: DocumentStorageType!
+  type: DocumentType!
+  createdByUserId: String!
+}
+
+input DocumentWhereUniqueInput {
+  id: String
+  barCode: String
+}
+
+
+# # AUTHENTICATE
+# # ROLE: ADMIN, USER
+type DocumentEdge @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  node: Document!
+  cursor: String!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: ADMIN, USER
+type DocumentConnection @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  pageInfo: PageInfo!
+  edges: [DocumentEdge!]!
+  totalCount: Int!
+}
+
+
+# # AUTHENTICATE
+type DocumentCloudSign @aws_cognito_user_pools {
+  id: String!
+  user_id: String!
+  title: String
+  note: String
+  message: String
+  status: Int
+  can_transfer: Boolean
+  private: Boolean
+  sent_at: AWSDateTime
+  last_processed_at: AWSDateTime
+  created_at: AWSDateTime
+  updated_at: AWSDateTime
+  participants: [Participants!]
+  files: [FileDocument!]
+}
+
+
+# # AUTHENTICATE
+# # ROLE: ADMIN, USER, CLINIC
+type CloudSignToken @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER", "CLINIC"]) {
+  accessToken: String!
+  tokenType: String!
+  expiresIn: Int
+}
+
+
+# # AUTHENTICATE
+# # ROLE: ADMIN
+type Participants @aws_cognito_user_pools(cognito_groups: ["ADMIN"]) {
+  id: String!
+  email: String!
+  name: String!
+  organization: String
+  order: Int
+  status: Int
+  language_code: String
+  processed_at: AWSDateTime
+}
+
+type FileDocument {
+  id: String!
+  name: String!
+  order: Int
+  total_pages: Int
+}
+
+input CreateDocumentCloudSignInput {
+  key: String!
+  title: String!
+  note: String
+  message: String
+  canTransfer: Boolean
+  isPrivate: Boolean
+}
+
+enum DoorOpenPermission {
+  SHORT_OPEN
+  LONG_OPEN
+  NOT_ALLOWED
+}
+
+type DoorPermission @aws_cognito_user_pools {
+  cognitoUsername: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  doorId: Int!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime
+  type: DoorOpenPermission!
+}
+
+type DoorPermissionList @aws_cognito_user_pools {
+  items: [DoorPermission!]!
+  totalCount: Int!
+}
+
+
+# # AUTHENTICATE
+type Egg @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  index: Int!
+  grade: EggGrade!
+  deviceBarcode: String!
+  kenBarcode: String!
+  eggCollectionReportId: String!
+}
+
+
+# # AUTHENTICATE
+type EggApplicant @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  remarks: String
+  eggCollectionTime: Int!
+  eggCollectionPlanDate: AWSDateTime!
+  status: EggApplicantStatus!
+  identityPaperType: IdentityPaperType!
+  identityPaperFront: String!
+  identityPaperBack: String
+  eggCollectionTimes: [EggCollectionTime!]
+  isLast: Boolean!
+  appliedBy: User
+  clinic: AffiliatedClinic
+  eggCollectionReport: EggCollectionReport
+  eggKitTransportation: EggKitTransportation
+  stockInfos: [StockInfo!]
+  billings: [Billing!]
+  subscription: PaymentSubscription
+}
+
+
+# # AUTHENTICATE
+# # ROLE: USER, CLINIC
+type EggCollectionTimes @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC"]) {
+  eggCollectionTimes: [EggCollectionTime!]
+  totalCount: Int!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: USER, CLINIC
+type ClinicByEggCollectionTime @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC"]) {
+  id: String!
+  clinicName: String!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: USER, CLINIC
+type EggCollectionTime @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC"]) {
+  id: String!
+  status: EggApplicantStatus
+  eggCollectionTime: Int!
+  clinic: ClinicByEggCollectionTime
+}
+
+input EggCollectionTimeWhereInput {
+  userId: String
+  status: EggApplicantStatus
+}
+
+input EggApplicantWhereUniqueInput {
+  id: String
+}
+
+input CreateEggApplicantInput {
+  clinicId: String!
+  eggCollectionPlanDate: AWSDate!
+  identityPaperType: IdentityPaperType!
+  identityPaperFront: String!
+  identityPaperBack: String
+}
+
+input UpdateEggApplicantInput {
+  eggCollectionTime: Int!
+  clinicId: String!
+  eggCollectionPlanDate: AWSDate!
+}
+
+
+# # AUTHENTICATE
+type EggApplicantEdge @aws_cognito_user_pools {
+  node: EggApplicant!
+  cursor: String!
+}
+
+
+# # AUTHENTICATE
+type EggApplicantConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [EggApplicantEdge!]!
+  totalCount: Int!
+}
+
+
+# # AUTHENTICATE
+type EggCollectionReport @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  eggCollectionDate: AWSDateTime!
+  eggFreezingDate: AWSDateTime
+  eggCollectionTime: Int!
+  eggCollectionUserDate: AWSDateTime
+  lastStockedDate: AWSDateTime
+  eggQuantity: Int
+  noKens: Int
+  noDevices: Int
+  files: [File!]
+  kens(where: KenWhereInput, skip: Int, take: Int, orderBy: KenOrderByInput, cursor: KenWhereUniqueInput, distinct: KenScalarFieldEnum): [Ken!]
+  eggApplicant: EggApplicant
+}
+
+
+# # AUTHENTICATE
+type File @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  fileName: String!
+  key: String!
+  description: String
+}
+
+input EggCollectionReportWhereCustomInput {
+  noKens: IntFilter
+}
+
+input CustomDeviceWhereInput {
+  noKens: IntFilter
+  noDevices: IntFilter
+}
+
+input EggCollectionReportWhereUniqueInput {
+  id: String
+}
+
+input ClinicCreateEggCollectionReportInput {
+  eggCollectionDate: AWSDate!
+  eggFreezingDate: AWSDate
+  eggApplicantId: String!
+  eggCollectionTime: Int!
+  kens: [CreateKensInput!]!
+  files: [CreateFileInput!]!
+}
+
+input CreateFileInput {
+  fileName: String!
+  key: String!
+}
+
+input UserCreateEggCollectionReportInput {
+  eggCollectionDate: AWSDate!
+  eggCollectionTime: Int!
+  clinicId: String
+}
+
+input CreateKensInput {
+  barCode: String!
+  devices: [CreateDevicesInput!]!
+}
+
+input CreateDevicesInput {
+  barCode: String!
+  eggs: [CreateEggsInput!]!
+}
+
+input CreateEggsInput {
+  grade: EggGrade!
+  index: Int!
+}
+
+
+# # AUTHENTICATE
+type EggCollectionReportEdge @aws_cognito_user_pools {
+  node: EggCollectionReport!
+  cursor: String!
+}
+
+
+# # AUTHENTICATE
+type EggCollectionReportConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [EggCollectionReportEdge!]!
+  totalCount: Int!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: CLINIC, ADMIN
+type EggKitTransportation @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"]) {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  documentSendDate: AWSDateTime!
+  barcodeSheetCount: Int!
+  eggApplicant: EggApplicant
+  kens: [Ken!]
+}
+
+input EggKitTransportationWhereUniqueInput {
+  id: String
+}
+
+input CreateEggKitTransportationInput {
+  eggApplicantId: String!
+  documentSendDate: AWSDate!
+  barcodeSheetCount: Int!
+}
+
+input AdminUpdateEggKitTransportStatusInput {
+  eggKitTransportId: String!
+  files: [CreateFileInput!]!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: CLINIC, ADMIN
+type EggKitTransportationEdge @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"]) {
+  node: EggKitTransportation!
+  cursor: String!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: CLINIC, ADMIN
+type EggKitTransportationConnection @aws_cognito_user_pools(cognito_groups: ["CLINIC", "ADMIN"]) {
+  pageInfo: PageInfo!
+  edges: [EggKitTransportationEdge!]!
+  totalCount: Int!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: USER, CLINIC, ADMIN
+# # Merge by EggTransportRequest and EggTransportRequestKen
+type EggTransportRequest @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"]) {
+  id: String!
+  eggTransportRequestId: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  expectedUseDate: AWSDateTime!
+  destinationClinicId: String!
+  destinationClinic: AffiliatedClinic
+  isConfirmedSpermTestByUser: Boolean!
+  isConfirmedStorageFeeByUser: Boolean!
+  userDocumentId: String!
+  requestById: String!
+  requestBy: User
+  ken: Ken
+  expectedAcceptanceDate: AWSDateTime
+  personInChargeId: String
+  personInCharge: PersonInCharge
+  clinicDocumentId: String
+  isConfirmedSpermTestByClinic: Boolean
+  isExplainedByClinic: Boolean
+  clinicStatus: EggTransportRequestStatusClinicSide
+  adminStatus: EggTransportRequestStatusAdminSide
+}
+
+input CreateEggTransportRequestInput {
+  expectedUseDate: AWSDate!
+  destinationClinicId: String!
+  kenIds: [String!]!
+  userDocumentId: String!
+  isConfirmedSpermTestByUser: Boolean
+  isConfirmedStorageFeeByUser: Boolean
+  transferFee: Int
+}
+
+input ClinicConfirmEggTransportRequestInput {
+  id: String!
+  expectedAcceptanceDate: AWSDate!
+  personInChargeId: String!
+  clinicDocumentId: String!
+  isConfirmedSpermTestByClinic: Boolean
+  isExplainedByClinic: Boolean
+}
+
+enum EggTransportRequestAdminSide {
+  WAIT_FOR_DELIVERY
+  ISSUE_DATE_CONFIRMED
+  CANCEL
+}
+
+input AdminUpdateEggTransportRequestInput {
+  id: String!
+  scheduledDeliveryDate: AWSDate
+  startTime: AWSDateTime
+  endTime: AWSDateTime
+  status: EggTransportRequestAdminSide!
+}
+
+input EggTransportRequestWhereUniqueInput {
+  id: String
+}
+
+input ClinicAcceptEggTransportRequestInput {
+  id: String!
+}
+
+
+# #AUTHENTICATE
+type EggTransportRequestEdge @aws_cognito_user_pools {
+  node: EggTransportRequest!
+  cursor: String!
+}
+
+
+# #AUTHENTICATE
+type EggTransportRequestConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [EggTransportRequestEdge!]!
+  totalCount: Int!
+}
+
+input EggTransportRequestKenWhereInput {
+  requestById: StringFilter
+  requestBy: UserWhereInput
+  destinationClinicId: StringFilter
+  destinationClinic: AffiliatedClinicWhereInput
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  kenId: StringFilter
+  ken: KenRelationFilter
+  eggTransportRequestId: StringFilter
+  eggTransportRequest: EggTransportRequestRelationFilter
+  clinicStatus: EnumEggTransportRequestStatusClinicSideFilter
+  adminStatus: EnumEggTransportRequestStatusAdminSideFilter
+  expectedAcceptanceDate: AWSDateTimeFilter
+  personInChargeId: StringFilter
+  personInCharge: PersonInChargeRelationFilter
+  clinicDocumentId: StringFilter
+  scheduledDeliveryDate: AWSDateTimeFilter
+  startTime: AWSDateTimeFilter
+  endTime: AWSDateTimeFilter
+  expectedUseDate: AWSDateTimeFilter
+  userDocumentId: StringFilter
+  isConfirmedSpermTestByClinic: BooleanFilter
+  isExplainedByClinic: BooleanFilter
+  isConfirmedSpermTestByUser: BooleanFilter
+  isConfirmedStorageFeeByUser: BooleanFilter
+  NOT: [EggTransportRequestKenWhereInput!]
+  AND: [EggTransportRequestKenWhereInput!]
+  OR: [EggTransportRequestKenWhereInput!]
+}
+
+enum AccountScalarFieldEnum {
+  id
+  cognitoId
+  createdAt
+  updatedAt
+  deletedAt
+  accountName
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  birthday
+  postCode
+  address1
+  address2
+  address3
+  lastLogin
+  isActive
+  clinicName
+  role
+}
+
+enum AdminScalarFieldEnum {
+  id
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  phoneNumber
+  email
+  accountId
+}
+
+enum StemCellScalarFieldEnum {
+  id
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  phoneNumber
+  email
+  accountId
+}
+
+enum UserScalarFieldEnum {
+  id
+  email
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  fullNameKana
+  phoneNumber
+  initialPhoneNumber
+  birthday
+  temporarySignUpDate
+  permanentSignUpDate
+  workCompany
+  memberShipNumber
+  systemToUseType
+  postalCodeServiceCompany
+  otherDiscountServices
+  currentPostalCode
+  currentAddress1
+  currentAddress2
+  currentAddress3
+  currentBuildingName
+  currentAddress
+  deliveryPostalCode
+  deliveryAddress1
+  deliveryAddress2
+  deliveryAddress3
+  deliveryBuildingName
+  deliveryAddress
+  addressReceiveEmailType
+  otherWelfareCompany
+  otherCompany
+  billPlan
+  otherCouponCode
+  welfareUserCode
+  isBenefit
+  isSubscribeNewsletter
+  isDeleveryAddress
+  identityPaperBack
+  identityPaperFront
+  identityPaperType
+  otherPostCode
+  otherAddress1
+  otherAddress2
+  otherAddress3
+  otherBuildingName
+  otherAddress
+  scheduledClinicId
+  signDocumentDate
+  status
+  accountId
+  couponId
+}
+
+enum UserOldInfoScalarFieldEnum {
+  id
+  email
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  fullNameKana
+  phoneNumber
+  birthday
+  workCompany
+  memberShipNumber
+  systemToUseType
+  postalCodeServiceCompany
+  otherDiscountServices
+  billPlan
+  currentPostalCode
+  currentAddress1
+  currentAddress2
+  currentAddress3
+  currentBuildingName
+  deliveryPostalCode
+  deliveryAddress1
+  deliveryAddress2
+  deliveryAddress3
+  deliveryBuildingName
+  addressReceiveEmailType
+  otherWelfareCompany
+  otherCompany
+  otherCouponCode
+  welfareUserCode
+  isBenefit
+  isSubscribeNewsletter
+  identityPaperBack
+  identityPaperFront
+  identityPaperType
+  otherPostCode
+  otherAddress1
+  otherAddress2
+  otherAddress3
+  otherBuildingName
+  scheduledClinicId
+  userId
+  couponId
+}
+
+enum AffiliatedClinicScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  representativeDirector
+  clinicName
+  email
+  phoneNumber
+  postalCode
+  address1
+  address2
+  address3
+  address4
+  address
+  website
+  prefectures
+  municipalities
+  buildingName
+  transferFee
+  status
+  accountId
+  updatedById
+}
+
+enum InquiryScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  inquiryUsername
+  email
+  phoneNumber
+  inquiryType
+  content
+  status
+  isUserReceiveNotification
+  isAdminReceiveNotification
+  conversationUpdatedAt
+  createdByUserId
+  takeCareByAdminId
+}
+
+enum InquiryMessageScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  content
+  isRead
+  keyFile
+  inquiryId
+  userId
+  adminId
+}
+
+enum EggApplicantScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  remarks
+  eggCollectionTime
+  eggCollectionPlanDate
+  identityPaperType
+  identityPaperFront
+  identityPaperBack
+  isLast
+  status
+  clinicId
+  appliedUserId
+}
+
+enum EggCollectionReportScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  eggCollectionDate
+  eggFreezingDate
+  eggCollectionTime
+  eggCollectionUserDate
+  lastStockedDate
+  eggQuantity
+  noKens
+  noDevices
+  eggApplicantId
+}
+
+enum KenScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  barCode
+  scheduleTransferDate
+  startTime
+  endTime
+  status
+  eggKitTranportId
+  eggCollectionReportId
+}
+
+enum DeviceScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  barCode
+  kenBarcode
+  eggCollectionReportId
+}
+
+enum EggScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  index
+  grade
+  kenBarcode
+  deviceBarcode
+  eggCollectionReportId
+}
+
+enum FileScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  fileName
+  key
+  description
+  userId
+  eggCollectionReportId
+}
+
+enum StockInfoScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  stockinPlanDateStart
+  stockinPlanDateEnd
+  stockoutPlanDateStart
+  stockoutPlanDateEnd
+  stockinPlanDate
+  stockinStartTime
+  stockinEndTime
+  stockoutPlanDate
+  stockoutStartTime
+  stockoutEndTime
+  barCode
+  eggApplicantId
+  kenId
+  appliedById
+  status
+  tankInfo
+  eggTransportRequestId
+  destinationClinicId
+}
+
+enum EggKitTransportationScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  documentSendDate
+  barcodeSheetCount
+  eggApplicantId
+}
+
+enum EggTransportRequestScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  destinationClinicId
+  requestById
+}
+
+enum EggTransportRequestKenScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  kenId
+  eggTransportRequestId
+  clinicStatus
+  adminStatus
+  expectedAcceptanceDate
+  personInChargeId
+  clinicDocumentId
+  scheduledDeliveryDate
+  startTime
+  endTime
+  expectedUseDate
+  userDocumentId
+  isConfirmedSpermTestByClinic
+  isExplainedByClinic
+  isConfirmedSpermTestByUser
+  isConfirmedStorageFeeByUser
+}
+
+enum PersonInChargeScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  fullName
+  lastNameKana
+  fullNameKana
+  firstNameKana
+  clinicId
+}
+
+enum BillingScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  total
+  amount
+  feeAmount
+  discount
+  billingDate
+  lastBillingDate
+  description
+  billingType
+  status
+  eggApplicantId
+  appliedById
+  eggTransportRequestId
+}
+
+enum AreaScalarFieldEnum {
+  code
+  region
+  prefecture
+  prefectureKana
+  city
+  cityKana
+  address1
+  address1Kana
+}
+
+enum StockMemberScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  lastName
+  firstName
+  lastNameKana
+  firstNameKana
+  fullName
+  fullNameKana
+  stemCellId
+}
+
+enum DocumentScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  keyFile
+  fileId
+  description
+  storageType
+  type
+  createdByUserId
+  status
+}
+
+enum CouponScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  type
+  benefitName
+  companyCode
+  discount
+}
+
+enum PaymentSubscriptionScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  userId
+  paymentDate
+  amount
+  feeAmount
+  billPlan
+  status
+  eggApplicantId
+}
+
+enum PaymentTransactionScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  amount
+  transactionId
+  trackingId
+  subscriptionId
+  errorCode
+  response
+  billingId
+  type
+  status
+}
+
+enum SystemConfigScalarFieldEnum {
+  id
+  createdAt
+  updatedAt
+  deletedAt
+  type
+  key
+  value
+  numberValue
+}
+
+enum VerifyTokenScalarFieldEnum {
+  id
+  createdByUserId
+  createdAt
+  updatedAt
+  deletedAt
+  token
+  lastEmail
+  newEmail
+  bizType
+}
+
+enum Role {
+  ADMIN
+  USER
+  CLINIC
+  STEMCELL
+}
+
+enum CouponType {
+  CHOICE_DISPLAY
+  WELFARE_AT_WORK
+  OTHERS
+}
+
+enum AddressReceiveEmailType {
+  RESIDENCE_CARD_ADDRESS
+  CURRENT_ADDRESS
+  OTHERS
+}
+
+enum BillPlan {
+  ANNUAL_PLAN
+  ANNUAL_PLAN_1
+  MONTHLY_PLAN
+}
+
+enum IdentityPaperType {
+  DRIVER_LICENSE
+  DRIVING_HISTORY_CERTIFICATE
+  PASSPORT
+  MY_NUMBER_CARD
+  BASIC_RESIDENT_REGISTER_CARD
+  HANDICAPPED_PERSON_NOTEBOOK
+  RESIDENCE_CARD
+  SPECIAL_PERMANENT_RESIDENT_CERTIFICATE
+}
+
+enum UserStatus {
+  WAIT_PERMANENT_REGISTER
+  WAIT_EGG_APPLICANT_CONTRACT_REQUEST
+  WAIT_SIGN_EGG_APPLICANT_CONTRACT
+  COMPLETED_SIGNING_EGG_CONTRACT
+  COMPLETED_SIGNING_STORAGE_PROCEDURE_CONTRACT
+  CANCELED
+}
+
+enum AffiliatedClinicStatus {
+  REGISTERED
+  WAIT_FOR_REGISTRATION
+}
+
+enum InquiryType {
+  STORAGE_TERMINATION_PROCEDURE
+  AFFILIATED_CLINIC
+  EGG_COLLECTION
+  STOREAGE
+  FEES
+  AGREEMENT
+  USE_OF_FROZEN_EGGS
+  OTHERS
+}
+
+enum InquiryStatus {
+  PROCESSING
+  COMPLETED
+  NOT_YET
+}
+
+enum EggApplicantStatus {
+  BEFORE_SENDING_THE_EGG_COLLECTION_KIT
+  WAIT_CLINIC_EGG_COLLECTION_REPORT
+  WAIT_USER_EGG_COLLECTION_REPORT
+  EGG_COLLECTED_OR_BEFORE_BILLING
+  COMPLETED_BILLING_OR_WAIT_FOR_STOCK_RECEIVE
+  CONFIRM_DATE_STOCK_RECEIVE
+  RECEIVED_OR_WAIT_CONTRACT
+  RECEIVED_OR_COMPLETED_CONTRACT
+  DELIVERY_DATE_CONFIRMED
+  PARTIAL_STOCK_OUT
+  ALL_STOCK_OUT
+  CANCELED
+}
+
+enum KenTransferStatus {
+  INIT
+  WAIT_FOR_WAREHOUSING
+  RECEIPT_DATE_CONFIRMED
+  WAIT_FOR_TRANSFER
+  TRANSFERRED
+  WAIT_CLINIC_CONFIRM
+  WAIT_FOR_DELIVERY
+  ISSUE_DATE_CONFIRMED
+  DELIVERED
+}
+
+enum EggGrade {
+  MII
+  MI
+  GV
+}
+
+enum StockInfoStatus {
+  WAIT_FOR_STOCK_IN
+  STOCK_IN
+  WAIT_FOR_STOCK_OUT
+  STOCK_OUT
+}
+
+enum EggTransportRequestStatusClinicSide {
+  WAIT_FOR_CONFIRMATION_CLINIC_SIDE
+  WAIT_FOR_MANAGEMENT_APPROVAL
+  APPROVED_BY_MANAGEMENT_OR_WAIT_FOR_STEM_CELL_ISSUE_PROCESSING
+  STEM_CELL_ISSUE_PROCESSING_CONFIRMED
+  CLINIC_ACCEPTED
+}
+
+enum EggTransportRequestStatusAdminSide {
+  WAIT_FOR_DELIVERY
+  ISSUE_DATE_CONFIRMED
+  CANCEL
+}
+
+enum BillingType {
+  INITIAL_BILLING
+  STOCK_OUT_BILLING
+  EGG_APPLICANT_BILLING
+}
+
+enum BillingStatus {
+  WAITTING_BILLING
+  PROCESSING
+  CONFIRMED
+  PAID
+  SYSTEM_ERROR
+  SOFTBANK_ERROR
+}
+
+enum DocumentStorageType {
+  CLOUDSIGN
+  S3
+}
+
+enum DocumentType {
+  FROZEN_EGG_STORAGE_CONSIGNMENT_CONTRACT
+  FREEZING_CONSENT_FORM_FOR_EGG_COLLECTION
+  FROZEN_EGG_TRANSFER_CONTRACT
+  EGG_APPLICANT_BEFORE_BEING_SIGNED
+  EGG_APPLICANT_AFTER_BEING_SIGNED
+  EGG_APPLICANT_CONTRACT
+}
+
+enum EggApplicantContractStatus {
+  UNSIGNED
+  SIGNED
+  REJECTED
+  CANCELED
+  OTHERS
+}
+
+enum SubscriptionStatus {
+  WAITING
+  RETRY
+  CANCELED
+}
+
+enum PaymentTransactionType {
+  REQUEST
+  CONFIRM
+  PURCHASE
+}
+
+enum PaymentTransactionStatus {
+  SUCCESS
+  FAILURE
+}
+
+enum SystemConfigType {
+  SYSTEM_CONFIG
+  PRICE_CONFIG
+}
+
+enum UpdateType {
+  CHANGE_EMAIL
+}
+
+
+# # AUTHENTICATE
+type Inquiry @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  inquiryUsername: String
+  email: String
+  phoneNumber: String
+  inquiryType: InquiryType!
+  content: String!
+  status: InquiryStatus!
+  isUserReceiveNotification: Boolean
+  isAdminReceiveNotification: Boolean
+  conversationUpdatedAt: AWSDateTime!
+  createdBy: UserPublic
+  createdByUserId: String
+  createdByUserName: String
+  takeCareByAdminId: String
+  takeCareBy: AdminPublic
+  messages(where: InquiryMessageWhereInput, skip: Int, take: Int, orderBy: [InquiryMessageOrderByInput!]): [InquiryMessage!]
+  noMessagesUnread: Int
+}
+
+input InquiryWhereUniqueInput {
+  id: String
+}
+
+input CreateInquiryInput {
+  inquiryUsername: String!
+  email: String!
+  phoneNumber: String!
+  inquiryType: InquiryType!
+  content: String!
+}
+
+input UserCreateInquiryInput {
+  inquiryType: InquiryType!
+  content: String!
+}
+
+input AdminReplyInquiryInput {
+  id: String!
+  content: String!
+}
+
+input AdminUpdateStatusInquiryInput {
+  id: String!
+  status: InquiryStatus!
+}
+
+input UpdateInquiryInput {
+  id: String
+  content: String
+}
+
+type InquiryEdge @aws_cognito_user_pools {
+  node: Inquiry!
+  cursor: String!
+}
+
+type InquiryConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [InquiryEdge!]!
+  totalCount: Int!
+}
+
+type InquiryMessage @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  content: String!
+  isRead: Boolean!
+  fileUrl: String
+  keyFile: String
+  inquiryId: String!
+  inquiry: Inquiry
+  userId: String
+  adminId: String
+  user: User
+  admin: Admin
+}
+
+input CreateInquiryMessageInput {
+  inquiryId: String!
+  content: String!
+  keyFile: String
+}
+
+input UpdateInquiryMessageInput {
+  id: String!
+  content: String
+  isRead: Boolean
+  keyFile: String
+}
+
+type Subscription {
+  createdMessage(inquiryId: String!): InquiryMessage @aws_cognito_user_pools @aws_api_key @aws_subscribe(mutations: ["createMessage"])
+}
+
+
+# #AUTHENTICATE
+type Ken @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  barCode: String!
+  devices(where: DeviceWhereInput, skip: Int, take: Int, orderBy: [DeviceOrderByInput!], cursor: DeviceWhereUniqueInput, distinct: DeviceScalarFieldEnum): [Device!]
+  eggCollectionReport: EggCollectionReport
+  noDevices: Int
+  noEggs: Int
+  stockInfo: StockInfo
+  status: KenTransferStatus
+  scheduleTransferDate: AWSDateTime
+  startTime: AWSDateTime
+  endTime: AWSDateTime
+}
+
+enum KenTransferStatusClinicSide {
+  WAIT_FOR_TRANSFER
+  TRANSFERRED
+}
+
+input ClinicScheduleTransferDateForKenInput {
+  kenIds: [String!]!
+  scheduleTransferDate: AWSDate!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+  status: KenTransferStatusClinicSide!
+}
+
+enum KenTransferStatusAdminSide {
+  INIT
+  WAIT_FOR_WAREHOUSING
+  RECEIPT_DATE_CONFIRMED
+}
+
+input AdminUpdateTransferInput {
+  kenIds: [String!]!
+  scheduleTransferDate: AWSDate!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+  status: KenTransferStatusAdminSide!
+}
+
+input KenWhereUniqueInput {
+  id: String
+  barCode: String
+}
+
+
+# #AUTHENTICATE
+type KenEdge @aws_cognito_user_pools {
+  node: Ken!
+  cursor: String!
+}
+
+
+# #AUTHENTICATE
+type KenConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [KenEdge!]!
+  totalCount: Int!
+}
+
+
+# # NOT AUTHENTICATE
+type PageInfo @aws_cognito_user_pools @aws_api_key {
+  startCursor: String
+  endCursor: String
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+}
+
+enum PriceConfig {
+  INIT_FEE_FIRST_YEAR
+  PRICE_PER_KEN_YEARLY_WITH_FEE
+  PRICE_PER_KEN_YEARLY_WITHOUT_FEE
+  PRICE_PER_KEN_MONTHLY
+  PRICE_PER_KEN_STOCK_OUT
+  WELFARE_CLUB
+  BENEFIT_STATION
+  PERK
+  WELBOX
+  SELECT_CLUB
+  KANSAI_ELECTRIC_PORWER
+  WELFARE_AT_WORK
+  OTHERS
+}
+
+type PaymentSubscription @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  user: User
+  amount: Float
+  paymentDate: AWSDateTime
+  eggApplicant: EggApplicant
+  transactions: [PaymentTransaction!]
+}
+
+type PaymentTransaction @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  amount: Float
+  transactionId: String
+  trackingId: String
+  subscription: PaymentSubscription
+  billing: Billing
+  type: PaymentTransactionType
+}
+
+type PaymentCreditCard @aws_cognito_user_pools {
+  cardNumber: String
+  cardExpiration: String
+  cardBrand: String
+}
+
+type BillingAmount @aws_cognito_user_pools {
+  price: Float
+  amount: Float
+  total: Float
+  discount: Float
+  feeAmount: Float
+  totalFeeAmount: Float
+  kenNumber: Float
+  coupon: Coupon
+  totalBillAmount: Float
+}
+
+input PaymentCreditCardInput {
+  isCreate: Boolean!
+  token: String!
+  tokenKey: String!
+}
+
+input BillingAmountInput {
+  eggApplicantId: String!
+  billPlan: BillPlan!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: CLINIC
+type PersonInCharge @aws_cognito_user_pools(cognito_groups: ["CLINIC"]) {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  firstName: String!
+  lastName: String!
+  fullName: String
+  firstNameKana: String!
+  lastNameKana: String!
+  fullNameKana: String
+}
+
+input CreatePersonInChargeInput {
+  firstName: String!
+  lastName: String!
+  firstNameKana: String!
+  lastNameKana: String!
+}
+
+input PersonInChargeWhereUniqueInput {
+  id: String
+}
+
+input UpdatePersonInChargeInput {
+  id: String!
+  firstName: String!
+  lastName: String!
+  firstNameKana: String!
+  lastNameKana: String!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: CLINIC
+type PersonInChargeEdge @aws_cognito_user_pools(cognito_groups: ["CLINIC"]) {
+  node: PersonInCharge!
+  cursor: String!
+}
+
+
+# # AUTHENTICATE
+# # ROLE: CLINIC
+type PersonInChargeConnection @aws_cognito_user_pools(cognito_groups: ["CLINIC"]) {
+  pageInfo: PageInfo!
+  edges: [PersonInChargeEdge!]!
+  totalCount: Int!
+}
+
+
+# NOT AUTHENTICATE
+type PostCode @aws_cognito_user_pools @aws_api_key {
+  code: String
+  region: String
+  prefecture: String
+  prefectureKana: String
+  city: String
+  cityKana: String
+  address1: String
+  address1Kana: String
+}
+
+type StemCell {
+  id: String
+  lastName: String
+  firstName: String
+  lastNameKana: String
+  firstNameKana: String
+  phoneNumber: String
+  email: String
+  account: Account
+  stockMembers: [StockMember!]
+}
+
+type StemCellEdge @aws_cognito_user_pools {
+  node: StemCell!
+  cursor: String!
+}
+
+type StemCellConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [StemCellEdge!]!
+  totalCount: Int!
+}
+
+input StemCellWhereUniqueInput {
+  id: String
+}
+
+type StockInfo @aws_cognito_user_pools {
+  id: String
+  stockinPlanDateStart: AWSDateTime @deprecated(reason: "test")
+  stockinPlanDateEnd: AWSDateTime @deprecated(reason: "test")
+  stockoutPlanDateStart: AWSDateTime @deprecated(reason: "test")
+  stockoutPlanDateEnd: AWSDateTime @deprecated(reason: "test")
+  stockinPlanDate: AWSDateTime
+  stockinStartTime: AWSDateTime
+  stockinEndTime: AWSDateTime
+  stockoutPlanDate: AWSDateTime
+  stockoutStartTime: AWSDateTime
+  stockoutEndTime: AWSDateTime
+  eggApplicant: EggApplicant
+  eggTransportRequest: EggTransportRequest @deprecated(reason: "test")
+  destinationClinic: AffiliatedClinic
+  barCode: String
+  ken: Ken
+  appliedBy: StockMember
+  noDevices: Int
+  noEggs: Int
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  status: StockInfoStatus
+  billing: Billing
+  tankInfo: String
+}
+
+type StockInfoEdge @aws_cognito_user_pools {
+  node: StockInfo!
+  cursor: String!
+}
+
+type StockInfoConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [StockInfoEdge!]!
+  totalCount: Int!
+}
+
+input StockInfoWhereUniqueInput {
+  id: String
+}
+
+input UpdateEggStockInfoInput {
+  id: String!
+  stockinPlanDateStart: AWSDateTime @deprecated(reason: "test")
+  stockinPlanDateEnd: AWSDateTime @deprecated(reason: "test")
+  stockoutPlanDateStart: AWSDateTime @deprecated(reason: "test")
+  stockoutPlanDateEnd: AWSDateTime @deprecated(reason: "test")
+  stockinPlanDate: AWSDateTime
+  stockinStartTime: AWSDateTime
+  stockinEndTime: AWSDateTime
+  stockoutPlanDate: AWSDateTime
+  stockoutStartTime: AWSDateTime
+  stockoutEndTime: AWSDateTime
+  appliedById: String
+  status: StockInfoStatus
+  barCode: String
+}
+
+type StockMember @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  lastName: String!
+  firstName: String!
+  lastNameKana: String!
+  firstNameKana: String!
+  fullName: String!
+  fullNameKana: String!
+  stemCell: StemCell
+  stockInfos: [StockInfo!]
+}
+
+type StockMemberEdge @aws_cognito_user_pools {
+  node: StockMember!
+  cursor: String!
+}
+
+type StockMemberConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [StockMemberEdge!]!
+  totalCount: Int!
+}
+
+input StockMemberWhereUniqueInput {
+  id: String
+}
+
+input StockMemberCreateInput {
+  lastName: String!
+  firstName: String!
+  lastNameKana: String!
+  firstNameKana: String!
+}
+
+input StockMemberUpdateInput {
+  id: String!
+  lastName: String!
+  firstName: String!
+  lastNameKana: String!
+  firstNameKana: String!
+}
+
+type SystemConfig @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  type: SystemConfigType
+  key: String
+  value: String
+  numberValue: Float
+}
+
+
+# # AUTHENTICATE
+type User @aws_cognito_user_pools {
+  id: String!
+  email: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  lastName: String!
+  firstName: String!
+  lastNameKana: String!
+  firstNameKana: String!
+  fullName: String!
+  fullNameKana: String!
+  phoneNumber: String
+  initialPhoneNumber: String
+  birthday: AWSDateTime
+  temporarySignUpDate: AWSDateTime
+  permanentSignUpDate: AWSDateTime
+  workCompany: String
+  memberShipNumber: String
+  systemToUseType: CouponType
+  welfareUserCode: String
+  postalCodeServiceCompany: String
+  otherDiscountServices: String
+  billPlan: BillPlan
+  currentPostalCode: String
+  currentAddress1: String
+  currentAddress2: String
+  currentAddress3: String
+  currentBuildingName: String
+  deliveryPostalCode: String
+  deliveryAddress1: String
+  deliveryAddress2: String
+  deliveryAddress3: String
+  deliveryBuildingName: String
+  addressReceiveEmailType: AddressReceiveEmailType!
+  isSubscribeNewsletter: Boolean!
+  isBenefit: Boolean
+  identityPaperBack: String
+  identityPaperFront: String
+  identityPaperType: IdentityPaperType!
+  otherPostCode: String
+  otherAddress1: String
+  otherAddress2: String
+  otherAddress3: String
+  otherCouponCode: String
+  otherBuildingName: String
+  status: UserStatus
+  signDocumentDate: AWSDateTime
+  scheduledClinicId: String
+  scheduledClinic: AffiliatedClinic
+  eggApplicantContractUrl: String
+  eggApplicantContractStatus: EggApplicantContractStatus
+  isDeleveryAddress: Boolean
+  otherCompany: String
+  preSignedEggApplicantContract: String @deprecated(reason: "use eggApplicantContractUrl and eggApplicantContractStatus")
+  signedEggApplicantContract: String @deprecated(reason: "use eggApplicantContractUrl and eggApplicantContractStatus")
+  lastSignedEggApplicantContract: String
+  isEggCollected: Boolean
+  accountId: String!
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN, USER
+  account: Account! @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN, USER
+  eggApplicants(where: EggApplicantWhereInput, orderBy: [EggApplicantOrderByInput!], skip: Int, take: Int): [EggApplicant!] @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN, USER
+  lastEggApplicant: EggApplicant
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN, USER
+  userOldInfos(where: UserOldInfoWhereInput, orderBy: [UserOldInfoOrderByInput!], skip: Int, take: Int): [UserOldInfo!] @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: ADMIN, USER
+  documents(where: DocumentWhereInput, orderBy: [DocumentOrderByInput!], skip: Int, take: Int): [Document!] @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  
+  # # AUTHENTICATE
+  # # ROLE: USER, ADMIN
+  billings(where: BillingWhereInput, orderBy: [BillingOrderByInput!], skip: Int, take: Int): [Billing!] @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+  couponId: String
+  coupon: Coupon
+  files: [File!] @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"])
+}
+
+type UserPublic @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  email: AWSEmail!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  lastName: String!
+  firstName: String!
+  lastNameKana: String!
+  firstNameKana: String!
+  fullName: String!
+  fullNameKana: String!
+  phoneNumber: String
+  birthday: AWSDateTime
+  couponId: String
+}
+
+input UserInput {
+  username: String
+  email: AWSEmail
+  phoneNumber: String
+  password: String
+  lastname: String
+  lastnameKana: String
+  firstname: String
+  firstnameKana: String
+  birthday: AWSDate
+  gender: String
+  workCompany: String
+  systemToUseType: CouponType
+  postalCode: String
+  address1: String
+  address2: String
+  address3: String
+  currentPostalCode: String
+  currentAddress1: String
+  currentAddress2: String
+  currentAddress3: String
+  currentBuildingName: String
+  deliveryPostalCode: String
+  deliveryAddress1: String
+  deliveryAddress2: String
+  deliveryAddress3: String
+  deliveryBuildingName: String
+  isSubscribeNewsletter: Boolean
+  isTemporaryRegister: Boolean
+  identityPaperType: IdentityPaperType
+  identityPaperFront: String
+  identityPaperBack: String
+  scheduledClinicId: String
+  couponId: String
+}
+
+input PermanentRegisterInput {
+  email: AWSEmail!
+  birthday: AWSDate!
+  firstName: String!
+  firstNameKana: String!
+  gender: String!
+  identityPaperBack: String
+  identityPaperFront: String
+  identityPaperType: IdentityPaperType!
+  isSubscribeNewsletter: Boolean!
+  isTemporaryRegister: Boolean!
+  systemToUseType: CouponType
+  lastName: String!
+  lastNameKana: String!
+  workCompany: String
+  phoneNumber: String!
+  currentPostalCode: String!
+  currentAddress1: String!
+  currentAddress2: String!
+  currentAddress3: String!
+  currentBuildingName: String!
+  deliveryPostalCode: String!
+  deliveryAddress1: String!
+  deliveryAddress2: String!
+  deliveryAddress3: String
+  deliveryBuildingName: String
+  password: String!
+  otherWelfareCompany: String
+  otherCompany: String
+  otherCouponCode: String
+  welfareUserCode: String
+  isBenefit: Boolean!
+  otherPostCode: String
+  otherAddress1: String
+  otherAddress2: String
+  otherAddress3: String
+  otherBuildingName: String
+  scheduledClinicId: String!
+  isDeleveryAddress: Boolean
+  couponId: String
+}
+
+input UserUpdateData {
+  birthday: AWSDate
+  firstName: String
+  firstNameKana: String
+  gender: String
+  identityPaperBack: String
+  identityPaperFront: String
+  identityPaperType: IdentityPaperType
+  isSubscribeNewsletter: Boolean
+  isTemporaryRegister: Boolean
+  systemToUseType: CouponType
+  lastName: String
+  lastNameKana: String
+  workCompany: String
+  phoneNumber: String
+  currentPostalCode: String
+  currentAddress1: String
+  currentAddress2: String
+  currentAddress3: String
+  currentBuildingName: String
+  deliveryPostalCode: String
+  deliveryAddress1: String
+  deliveryAddress2: String
+  deliveryAddress3: String
+  deliveryBuildingName: String
+  password: String
+  otherWelfareCompany: String
+  otherCompany: String
+  otherCouponCode: String
+  welfareUserCode: String
+  isBenefit: Boolean
+  otherPostCode: String
+  otherAddress1: String
+  otherAddress2: String
+  otherAddress3: String
+  otherBuildingName: String
+  scheduledClinicId: String
+  addressReceiveEmailType: AddressReceiveEmailType
+  newEmail: String
+  isDeleveryAddress: Boolean
+  couponId: String
+}
+
+input AdminUpdateUserInfoInput {
+  userId: String!
+  birthday: AWSDate
+  firstName: String
+  firstNameKana: String
+  gender: String
+  identityPaperBack: String
+  identityPaperFront: String
+  identityPaperType: IdentityPaperType
+  isSubscribeNewsletter: Boolean
+  isTemporaryRegister: Boolean
+  systemToUseType: CouponType
+  lastName: String
+  lastNameKana: String
+  workCompany: String
+  phoneNumber: String
+  currentPostalCode: String
+  currentAddress1: String
+  currentAddress2: String
+  currentAddress3: String
+  currentBuildingName: String
+  deliveryPostalCode: String
+  deliveryAddress1: String
+  deliveryAddress2: String
+  deliveryAddress3: String
+  deliveryBuildingName: String
+  otherWelfareCompany: String
+  otherCompany: String
+  otherCouponCode: String
+  welfareUserCode: String
+  isBenefit: Boolean
+  otherPostCode: String
+  otherAddress1: String
+  otherAddress2: String
+  otherAddress3: String
+  otherBuildingName: String
+  scheduledClinicId: String
+  addressReceiveEmailType: AddressReceiveEmailType
+  newEmail: String
+  isDeleveryAddress: Boolean
+  couponId: String
+}
+
+type AccountInfoOutput {
+  accountName: String
+  lastName: String
+  firstName: String
+  lastNameKana: String
+  firstNameKana: String
+  clinicName: String
+  couponId: String
+}
+
+input UserWhereUniqueInput {
+  id: String
+  accountId: String
+  phoneNumber: String
+}
+
+
+# #AUTHENTICATE
+type UserEdge @aws_cognito_user_pools {
+  node: User!
+  cursor: String!
+}
+
+input UserTerminateContractInput {
+  terminateContractType: TerminateContractType!
+  
+  # # require with CONSENT_FOR_DISPOSAL terminateContractType
+  isAgreeConsentForDisposal: Boolean
+  
+  # # require with CONSENT_FOR_DISPOSAL terminateContractType
+  isUseForPrivatePurpose: Boolean
+  reasonType: ReasonType!
+}
+
+enum TerminateContractType {
+  CONSENT_FOR_DISPOSAL
+  HOPE_TO_TRANSFER
+}
+
+enum ReasonType {
+  BALANCE_WITH_STORAGE_COSTS
+  PREGNANT_OR_HAVE_A_CHILD
+  OTHER
+}
+
+enum UserDeleteAccountReasonType {
+  EGG_COLLECTION_COST
+  STORAGE_COST
+  TIMING_ISSUES
+  CONVENIENCE_OF_WORK
+  ANXIETY_ABOUT_EGG_COLLECTION
+  ANXIETY_ABOUT_THE_STORAGE_SYSTEM
+  COMPARE_AT_MULTIPLE_CLINICS
+  GOT_A_PARTNER
+  OTHERS
+}
+
+
+# #AUTHENTICATE
+type UserConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]!
+  totalCount: Int!
+}
+
+
+# #AUTHENTICATE
+# #ROLE: ADMIN, USER
+type UserOldInfo @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  id: String!
+  email: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  lastName: String!
+  firstName: String!
+  lastNameKana: String!
+  firstNameKana: String!
+  fullName: String!
+  fullNameKana: String!
+  phoneNumber: String
+  birthday: AWSDateTime
+  workCompany: String
+  memberShipNumber: String
+  systemToUseType: CouponType!
+  postalCodeServiceCompany: String
+  otherDiscountServices: String
+  currentPostalCode: String
+  currentAddress1: String
+  currentAddress2: String
+  currentAddress3: String
+  deliveryPostalCode: String
+  deliveryAddress1: String
+  deliveryAddress2: String
+  deliveryAddress3: String
+  addressReceiveEmailType: AddressReceiveEmailType!
+  otherWelfareCompany: String
+  otherCompany: String
+  otherCouponCode: String
+  welfareUserCode: String
+  isBenefit: Boolean
+  isSubscribeNewsletter: Boolean
+  identityPaperBack: String
+  identityPaperFront: String
+  identityPaperType: IdentityPaperType!
+  otherPostCode: String
+  otherAddress1: String
+  otherAddress2: String
+  otherAddress3: String
+  otherBuildingName: String
+  userId: String!
+  scheduledClinicId: String
+  scheduledClinic: AffiliatedClinic
+  currentBuildingName: String
+  couponId: String
+  coupon: Coupon
+}
+
+input UserOldInfoWhereUniqueInput {
+  id: String
+}
+
+
+# #AUTHENTICATE
+# #ROLE: ADMIN, USER
+type UserOldInfoEdge @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  node: UserOldInfo!
+  cursor: String!
+}
+
+
+# #AUTHENTICATE
+# #ROLE: ADMIN, USER
+type UserOldInfoConnection @aws_cognito_user_pools(cognito_groups: ["ADMIN", "USER"]) {
+  pageInfo: PageInfo!
+  edges: [UserOldInfoEdge!]!
+  totalCount: Int!
+}
+
+input AccountListRelationFilter {
+  every: AccountWhereInput
+  some: AccountWhereInput
+  none: AccountWhereInput
+}
+
+input AccountRelationFilter {
+  is: AccountWhereInput
+  isNot: AccountWhereInput
+}
+
+input AccountWhereInput {
+  id: StringFilter
+  cognitoId: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  accountName: StringFilter
+  lastName: StringFilter
+  firstName: StringFilter
+  lastNameKana: StringFilter
+  firstNameKana: StringFilter
+  birthday: AWSDateTimeFilter
+  postCode: StringFilter
+  address1: StringFilter
+  address2: StringFilter
+  address3: StringFilter
+  lastLogin: AWSDateTimeFilter
+  isActive: BooleanFilter
+  clinicName: StringFilter
+  role: EnumRoleFilter
+  user: UserRelationFilter
+  affiliatedClinic: AffiliatedClinicRelationFilter
+  admin: AdminRelationFilter
+  stemCell: StemCellRelationFilter
+  NOT: [AccountWhereInput!]
+  AND: [AccountWhereInput!]
+  OR: [AccountWhereInput!]
+}
+
+input AccountOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AccountOrderByInput {
+  id: SortOrder
+  cognitoId: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  accountName: SortOrder
+  lastName: SortOrder
+  firstName: SortOrder
+  lastNameKana: SortOrder
+  firstNameKana: SortOrder
+  birthday: SortOrder
+  postCode: SortOrder
+  address1: SortOrder
+  address2: SortOrder
+  address3: SortOrder
+  lastLogin: SortOrder
+  isActive: SortOrder
+  clinicName: SortOrder
+  role: SortOrder
+  user: UserOrderByInput
+  affiliatedClinic: AffiliatedClinicOrderByInput
+  admin: AdminOrderByInput
+  stemCell: StemCellOrderByInput
+}
+
+input AdminListRelationFilter {
+  every: AdminWhereInput
+  some: AdminWhereInput
+  none: AdminWhereInput
+}
+
+input AdminRelationFilter {
+  is: AdminWhereInput
+  isNot: AdminWhereInput
+}
+
+input AdminWhereInput {
+  id: StringFilter
+  lastName: StringFilter
+  firstName: StringFilter
+  lastNameKana: StringFilter
+  firstNameKana: StringFilter
+  fullName: StringFilter
+  phoneNumber: StringFilter
+  email: StringFilter
+  accountId: StringFilter
+  account: AccountRelationFilter
+  takeCareInquiries: InquiryListRelationFilter
+  updatedClinics: AffiliatedClinicListRelationFilter
+  inquiryMessages: InquiryMessageListRelationFilter
+  NOT: [AdminWhereInput!]
+  AND: [AdminWhereInput!]
+  OR: [AdminWhereInput!]
+}
+
+input AdminOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AdminOrderByInput {
+  id: SortOrder
+  lastName: SortOrder
+  firstName: SortOrder
+  lastNameKana: SortOrder
+  firstNameKana: SortOrder
+  fullName: SortOrder
+  phoneNumber: SortOrder
+  email: SortOrder
+  accountId: SortOrder
+  account: AccountOrderByInput
+  takeCareInquiries: InquiryOrderByRelationAggregateInput
+  updatedClinics: AffiliatedClinicOrderByRelationAggregateInput
+  inquiryMessages: InquiryMessageOrderByRelationAggregateInput
+}
+
+input StemCellListRelationFilter {
+  every: StemCellWhereInput
+  some: StemCellWhereInput
+  none: StemCellWhereInput
+}
+
+input StemCellRelationFilter {
+  is: StemCellWhereInput
+  isNot: StemCellWhereInput
+}
+
+input StemCellWhereInput {
+  id: StringFilter
+  lastName: StringFilter
+  firstName: StringFilter
+  lastNameKana: StringFilter
+  firstNameKana: StringFilter
+  phoneNumber: StringFilter
+  email: StringFilter
+  accountId: StringFilter
+  account: AccountRelationFilter
+  stockMembers: StockMemberListRelationFilter
+  NOT: [StemCellWhereInput!]
+  AND: [StemCellWhereInput!]
+  OR: [StemCellWhereInput!]
+}
+
+input StemCellOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input StemCellOrderByInput {
+  id: SortOrder
+  lastName: SortOrder
+  firstName: SortOrder
+  lastNameKana: SortOrder
+  firstNameKana: SortOrder
+  phoneNumber: SortOrder
+  email: SortOrder
+  accountId: SortOrder
+  account: AccountOrderByInput
+  stockMembers: StockMemberOrderByRelationAggregateInput
+}
+
+input UserListRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
+}
+
+input UserRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
+input UserWhereInput {
+  id: StringFilter
+  email: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  lastName: StringFilter
+  firstName: StringFilter
+  lastNameKana: StringFilter
+  firstNameKana: StringFilter
+  fullName: StringFilter
+  fullNameKana: StringFilter
+  phoneNumber: StringFilter
+  initialPhoneNumber: StringFilter
+  birthday: AWSDateTimeFilter
+  temporarySignUpDate: AWSDateTimeFilter
+  permanentSignUpDate: AWSDateTimeFilter
+  workCompany: StringFilter
+  memberShipNumber: StringFilter
+  systemToUseType: EnumCouponTypeFilter
+  postalCodeServiceCompany: StringFilter
+  otherDiscountServices: StringFilter
+  currentPostalCode: StringFilter
+  currentAddress1: StringFilter
+  currentAddress2: StringFilter
+  currentAddress3: StringFilter
+  currentBuildingName: StringFilter
+  currentAddress: StringFilter
+  deliveryPostalCode: StringFilter
+  deliveryAddress1: StringFilter
+  deliveryAddress2: StringFilter
+  deliveryAddress3: StringFilter
+  deliveryBuildingName: StringFilter
+  deliveryAddress: StringFilter
+  addressReceiveEmailType: EnumAddressReceiveEmailTypeFilter
+  otherWelfareCompany: StringFilter
+  otherCompany: StringFilter
+  billPlan: EnumBillPlanFilter
+  otherCouponCode: StringFilter
+  welfareUserCode: StringFilter
+  isBenefit: BooleanFilter
+  isSubscribeNewsletter: BooleanFilter
+  isDeleveryAddress: BooleanFilter
+  identityPaperBack: StringFilter
+  identityPaperFront: StringFilter
+  identityPaperType: EnumIdentityPaperTypeFilter
+  otherPostCode: StringFilter
+  otherAddress1: StringFilter
+  otherAddress2: StringFilter
+  otherAddress3: StringFilter
+  otherBuildingName: StringFilter
+  otherAddress: StringFilter
+  scheduledClinicId: StringFilter
+  signDocumentDate: AWSDateTimeFilter
+  scheduledClinic: AffiliatedClinicRelationFilter
+  status: EnumUserStatusFilter
+  accountId: StringFilter
+  account: AccountRelationFilter
+  billings: BillingListRelationFilter
+  eggApplicants: EggApplicantListRelationFilter
+  createdInquiries: InquiryListRelationFilter
+  userOldInfos: UserOldInfoListRelationFilter
+  eggTransportRequest: EggTransportRequestListRelationFilter
+  documents: DocumentListRelationFilter
+  inquiryMessages: InquiryMessageListRelationFilter
+  subscriptions: PaymentSubscriptionListRelationFilter
+  VerifyToken: VerifyTokenListRelationFilter
+  couponId: StringFilter
+  coupon: CouponRelationFilter
+  files: FileListRelationFilter
+  NOT: [UserWhereInput!]
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+}
+
+input UserOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input UserOrderByInput {
+  id: SortOrder
+  email: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  lastName: SortOrder
+  firstName: SortOrder
+  lastNameKana: SortOrder
+  firstNameKana: SortOrder
+  fullName: SortOrder
+  fullNameKana: SortOrder
+  phoneNumber: SortOrder
+  initialPhoneNumber: SortOrder
+  birthday: SortOrder
+  temporarySignUpDate: SortOrder
+  permanentSignUpDate: SortOrder
+  workCompany: SortOrder
+  memberShipNumber: SortOrder
+  systemToUseType: SortOrder
+  postalCodeServiceCompany: SortOrder
+  otherDiscountServices: SortOrder
+  currentPostalCode: SortOrder
+  currentAddress1: SortOrder
+  currentAddress2: SortOrder
+  currentAddress3: SortOrder
+  currentBuildingName: SortOrder
+  currentAddress: SortOrder
+  deliveryPostalCode: SortOrder
+  deliveryAddress1: SortOrder
+  deliveryAddress2: SortOrder
+  deliveryAddress3: SortOrder
+  deliveryBuildingName: SortOrder
+  deliveryAddress: SortOrder
+  addressReceiveEmailType: SortOrder
+  otherWelfareCompany: SortOrder
+  otherCompany: SortOrder
+  billPlan: SortOrder
+  otherCouponCode: SortOrder
+  welfareUserCode: SortOrder
+  isBenefit: SortOrder
+  isSubscribeNewsletter: SortOrder
+  isDeleveryAddress: SortOrder
+  identityPaperBack: SortOrder
+  identityPaperFront: SortOrder
+  identityPaperType: SortOrder
+  otherPostCode: SortOrder
+  otherAddress1: SortOrder
+  otherAddress2: SortOrder
+  otherAddress3: SortOrder
+  otherBuildingName: SortOrder
+  otherAddress: SortOrder
+  scheduledClinicId: SortOrder
+  signDocumentDate: SortOrder
+  scheduledClinic: AffiliatedClinicOrderByInput
+  status: SortOrder
+  accountId: SortOrder
+  account: AccountOrderByInput
+  billings: BillingOrderByRelationAggregateInput
+  eggApplicants: EggApplicantOrderByRelationAggregateInput
+  createdInquiries: InquiryOrderByRelationAggregateInput
+  userOldInfos: UserOldInfoOrderByRelationAggregateInput
+  eggTransportRequest: EggTransportRequestOrderByRelationAggregateInput
+  documents: DocumentOrderByRelationAggregateInput
+  inquiryMessages: InquiryMessageOrderByRelationAggregateInput
+  subscriptions: PaymentSubscriptionOrderByRelationAggregateInput
+  VerifyToken: VerifyTokenOrderByRelationAggregateInput
+  couponId: SortOrder
+  coupon: CouponOrderByInput
+  files: FileOrderByRelationAggregateInput
+}
+
+input UserOldInfoListRelationFilter {
+  every: UserOldInfoWhereInput
+  some: UserOldInfoWhereInput
+  none: UserOldInfoWhereInput
+}
+
+input UserOldInfoRelationFilter {
+  is: UserOldInfoWhereInput
+  isNot: UserOldInfoWhereInput
+}
+
+input UserOldInfoWhereInput {
+  id: StringFilter
+  email: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  lastName: StringFilter
+  firstName: StringFilter
+  lastNameKana: StringFilter
+  firstNameKana: StringFilter
+  fullName: StringFilter
+  fullNameKana: StringFilter
+  phoneNumber: StringFilter
+  birthday: AWSDateTimeFilter
+  workCompany: StringFilter
+  memberShipNumber: StringFilter
+  systemToUseType: EnumCouponTypeFilter
+  postalCodeServiceCompany: StringFilter
+  otherDiscountServices: StringFilter
+  billPlan: EnumBillPlanFilter
+  currentPostalCode: StringFilter
+  currentAddress1: StringFilter
+  currentAddress2: StringFilter
+  currentAddress3: StringFilter
+  currentBuildingName: StringFilter
+  deliveryPostalCode: StringFilter
+  deliveryAddress1: StringFilter
+  deliveryAddress2: StringFilter
+  deliveryAddress3: StringFilter
+  deliveryBuildingName: StringFilter
+  addressReceiveEmailType: EnumAddressReceiveEmailTypeFilter
+  otherWelfareCompany: StringFilter
+  otherCompany: StringFilter
+  otherCouponCode: StringFilter
+  welfareUserCode: StringFilter
+  isBenefit: BooleanFilter
+  isSubscribeNewsletter: BooleanFilter
+  identityPaperBack: StringFilter
+  identityPaperFront: StringFilter
+  identityPaperType: EnumIdentityPaperTypeFilter
+  otherPostCode: StringFilter
+  otherAddress1: StringFilter
+  otherAddress2: StringFilter
+  otherAddress3: StringFilter
+  otherBuildingName: StringFilter
+  scheduledClinicId: StringFilter
+  scheduledClinic: AffiliatedClinicRelationFilter
+  userId: StringFilter
+  user: UserRelationFilter
+  couponId: StringFilter
+  coupon: CouponRelationFilter
+  NOT: [UserOldInfoWhereInput!]
+  AND: [UserOldInfoWhereInput!]
+  OR: [UserOldInfoWhereInput!]
+}
+
+input UserOldInfoOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input UserOldInfoOrderByInput {
+  id: SortOrder
+  email: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  lastName: SortOrder
+  firstName: SortOrder
+  lastNameKana: SortOrder
+  firstNameKana: SortOrder
+  fullName: SortOrder
+  fullNameKana: SortOrder
+  phoneNumber: SortOrder
+  birthday: SortOrder
+  workCompany: SortOrder
+  memberShipNumber: SortOrder
+  systemToUseType: SortOrder
+  postalCodeServiceCompany: SortOrder
+  otherDiscountServices: SortOrder
+  billPlan: SortOrder
+  currentPostalCode: SortOrder
+  currentAddress1: SortOrder
+  currentAddress2: SortOrder
+  currentAddress3: SortOrder
+  currentBuildingName: SortOrder
+  deliveryPostalCode: SortOrder
+  deliveryAddress1: SortOrder
+  deliveryAddress2: SortOrder
+  deliveryAddress3: SortOrder
+  deliveryBuildingName: SortOrder
+  addressReceiveEmailType: SortOrder
+  otherWelfareCompany: SortOrder
+  otherCompany: SortOrder
+  otherCouponCode: SortOrder
+  welfareUserCode: SortOrder
+  isBenefit: SortOrder
+  isSubscribeNewsletter: SortOrder
+  identityPaperBack: SortOrder
+  identityPaperFront: SortOrder
+  identityPaperType: SortOrder
+  otherPostCode: SortOrder
+  otherAddress1: SortOrder
+  otherAddress2: SortOrder
+  otherAddress3: SortOrder
+  otherBuildingName: SortOrder
+  scheduledClinicId: SortOrder
+  scheduledClinic: AffiliatedClinicOrderByInput
+  userId: SortOrder
+  user: UserOrderByInput
+  couponId: SortOrder
+  coupon: CouponOrderByInput
+}
+
+input AffiliatedClinicListRelationFilter {
+  every: AffiliatedClinicWhereInput
+  some: AffiliatedClinicWhereInput
+  none: AffiliatedClinicWhereInput
+}
+
+input AffiliatedClinicRelationFilter {
+  is: AffiliatedClinicWhereInput
+  isNot: AffiliatedClinicWhereInput
+}
+
+input AffiliatedClinicWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  representativeDirector: StringFilter
+  clinicName: StringFilter
+  email: StringFilter
+  phoneNumber: StringFilter
+  postalCode: StringFilter
+  address1: StringFilter
+  address2: StringFilter
+  address3: StringFilter
+  address4: StringFilter
+  address: StringFilter
+  website: StringFilter
+  prefectures: StringFilter
+  municipalities: StringFilter
+  buildingName: StringFilter
+  transferFee: FloatFilter
+  status: EnumAffiliatedClinicStatusFilter
+  account: AccountRelationFilter
+  accountId: StringFilter
+  updatedById: StringFilter
+  updatedBy: AdminRelationFilter
+  scheduledUsers: UserListRelationFilter
+  scheduledOldInfoUsers: UserOldInfoListRelationFilter
+  eggApplicants: EggApplicantListRelationFilter
+  eggTransportRequest: EggTransportRequestListRelationFilter
+  personInCharge: PersonInChargeListRelationFilter
+  stockInfos: StockInfoListRelationFilter
+  NOT: [AffiliatedClinicWhereInput!]
+  AND: [AffiliatedClinicWhereInput!]
+  OR: [AffiliatedClinicWhereInput!]
+}
+
+input AffiliatedClinicOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AffiliatedClinicOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  representativeDirector: SortOrder
+  clinicName: SortOrder
+  email: SortOrder
+  phoneNumber: SortOrder
+  postalCode: SortOrder
+  address1: SortOrder
+  address2: SortOrder
+  address3: SortOrder
+  address4: SortOrder
+  address: SortOrder
+  website: SortOrder
+  prefectures: SortOrder
+  municipalities: SortOrder
+  buildingName: SortOrder
+  transferFee: SortOrder
+  status: SortOrder
+  account: AccountOrderByInput
+  accountId: SortOrder
+  updatedById: SortOrder
+  updatedBy: AdminOrderByInput
+  scheduledUsers: UserOrderByRelationAggregateInput
+  scheduledOldInfoUsers: UserOldInfoOrderByRelationAggregateInput
+  eggApplicants: EggApplicantOrderByRelationAggregateInput
+  eggTransportRequest: EggTransportRequestOrderByRelationAggregateInput
+  personInCharge: PersonInChargeOrderByRelationAggregateInput
+  stockInfos: StockInfoOrderByRelationAggregateInput
+}
+
+input InquiryListRelationFilter {
+  every: InquiryWhereInput
+  some: InquiryWhereInput
+  none: InquiryWhereInput
+}
+
+input InquiryRelationFilter {
+  is: InquiryWhereInput
+  isNot: InquiryWhereInput
+}
+
+input InquiryWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  inquiryUsername: StringFilter
+  email: StringFilter
+  phoneNumber: StringFilter
+  inquiryType: EnumInquiryTypeFilter
+  content: StringFilter
+  status: EnumInquiryStatusFilter
+  isUserReceiveNotification: BooleanFilter
+  isAdminReceiveNotification: BooleanFilter
+  conversationUpdatedAt: AWSDateTimeFilter
+  createdBy: UserRelationFilter
+  createdByUserId: StringFilter
+  takeCareBy: AdminRelationFilter
+  takeCareByAdminId: StringFilter
+  messages: InquiryMessageListRelationFilter
+  NOT: [InquiryWhereInput!]
+  AND: [InquiryWhereInput!]
+  OR: [InquiryWhereInput!]
+}
+
+input InquiryOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input InquiryOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  inquiryUsername: SortOrder
+  email: SortOrder
+  phoneNumber: SortOrder
+  inquiryType: SortOrder
+  content: SortOrder
+  status: SortOrder
+  isUserReceiveNotification: SortOrder
+  isAdminReceiveNotification: SortOrder
+  conversationUpdatedAt: SortOrder
+  createdBy: UserOrderByInput
+  createdByUserId: SortOrder
+  takeCareBy: AdminOrderByInput
+  takeCareByAdminId: SortOrder
+  messages: InquiryMessageOrderByRelationAggregateInput
+}
+
+input InquiryMessageListRelationFilter {
+  every: InquiryMessageWhereInput
+  some: InquiryMessageWhereInput
+  none: InquiryMessageWhereInput
+}
+
+input InquiryMessageRelationFilter {
+  is: InquiryMessageWhereInput
+  isNot: InquiryMessageWhereInput
+}
+
+input InquiryMessageWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  content: StringFilter
+  isRead: BooleanFilter
+  keyFile: StringFilter
+  inquiryId: StringFilter
+  inquiry: InquiryRelationFilter
+  userId: StringFilter
+  adminId: StringFilter
+  user: UserRelationFilter
+  admin: AdminRelationFilter
+  NOT: [InquiryMessageWhereInput!]
+  AND: [InquiryMessageWhereInput!]
+  OR: [InquiryMessageWhereInput!]
+}
+
+input InquiryMessageOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input InquiryMessageOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  content: SortOrder
+  isRead: SortOrder
+  keyFile: SortOrder
+  inquiryId: SortOrder
+  inquiry: InquiryOrderByInput
+  userId: SortOrder
+  adminId: SortOrder
+  user: UserOrderByInput
+  admin: AdminOrderByInput
+}
+
+input EggApplicantListRelationFilter {
+  every: EggApplicantWhereInput
+  some: EggApplicantWhereInput
+  none: EggApplicantWhereInput
+}
+
+input EggApplicantRelationFilter {
+  is: EggApplicantWhereInput
+  isNot: EggApplicantWhereInput
+}
+
+input EggApplicantWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  remarks: StringFilter
+  eggCollectionTime: IntFilter
+  eggCollectionPlanDate: AWSDateTimeFilter
+  identityPaperType: EnumIdentityPaperTypeFilter
+  identityPaperFront: StringFilter
+  identityPaperBack: StringFilter
+  isLast: BooleanFilter
+  status: EnumEggApplicantStatusFilter
+  clinicId: StringFilter
+  clinic: AffiliatedClinicRelationFilter
+  appliedUserId: StringFilter
+  appliedBy: UserRelationFilter
+  eggCollectionReport: EggCollectionReportRelationFilter
+  billings: BillingListRelationFilter
+  eggKitTransportation: EggKitTransportationRelationFilter
+  stockInfos: StockInfoListRelationFilter
+  subscription: PaymentSubscriptionRelationFilter
+  NOT: [EggApplicantWhereInput!]
+  AND: [EggApplicantWhereInput!]
+  OR: [EggApplicantWhereInput!]
+}
+
+input EggApplicantOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input EggApplicantOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  remarks: SortOrder
+  eggCollectionTime: SortOrder
+  eggCollectionPlanDate: SortOrder
+  identityPaperType: SortOrder
+  identityPaperFront: SortOrder
+  identityPaperBack: SortOrder
+  isLast: SortOrder
+  status: SortOrder
+  clinicId: SortOrder
+  clinic: AffiliatedClinicOrderByInput
+  appliedUserId: SortOrder
+  appliedBy: UserOrderByInput
+  eggCollectionReport: EggCollectionReportOrderByInput
+  billings: BillingOrderByRelationAggregateInput
+  eggKitTransportation: EggKitTransportationOrderByInput
+  stockInfos: StockInfoOrderByRelationAggregateInput
+  subscription: PaymentSubscriptionOrderByInput
+}
+
+input EggCollectionReportListRelationFilter {
+  every: EggCollectionReportWhereInput
+  some: EggCollectionReportWhereInput
+  none: EggCollectionReportWhereInput
+}
+
+input EggCollectionReportRelationFilter {
+  is: EggCollectionReportWhereInput
+  isNot: EggCollectionReportWhereInput
+}
+
+input EggCollectionReportWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  eggCollectionDate: AWSDateTimeFilter
+  eggFreezingDate: AWSDateTimeFilter
+  eggCollectionTime: IntFilter
+  eggCollectionUserDate: AWSDateTimeFilter
+  lastStockedDate: AWSDateTimeFilter
+  eggQuantity: IntFilter
+  noKens: IntFilter
+  noDevices: IntFilter
+  kens: KenListRelationFilter
+  devices: DeviceListRelationFilter
+  eggApplicantId: StringFilter
+  eggApplicant: EggApplicantRelationFilter
+  files: FileListRelationFilter
+  eggs: EggListRelationFilter
+  NOT: [EggCollectionReportWhereInput!]
+  AND: [EggCollectionReportWhereInput!]
+  OR: [EggCollectionReportWhereInput!]
+}
+
+input EggCollectionReportOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input EggCollectionReportOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  eggCollectionDate: SortOrder
+  eggFreezingDate: SortOrder
+  eggCollectionTime: SortOrder
+  eggCollectionUserDate: SortOrder
+  lastStockedDate: SortOrder
+  eggQuantity: SortOrder
+  noKens: SortOrder
+  noDevices: SortOrder
+  kens: KenOrderByRelationAggregateInput
+  devices: DeviceOrderByRelationAggregateInput
+  eggApplicantId: SortOrder
+  eggApplicant: EggApplicantOrderByInput
+  files: FileOrderByRelationAggregateInput
+  eggs: EggOrderByRelationAggregateInput
+}
+
+input KenListRelationFilter {
+  every: KenWhereInput
+  some: KenWhereInput
+  none: KenWhereInput
+}
+
+input KenRelationFilter {
+  is: KenWhereInput
+  isNot: KenWhereInput
+}
+
+input KenWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  barCode: StringFilter
+  devices: DeviceListRelationFilter
+  scheduleTransferDate: AWSDateTimeFilter
+  startTime: AWSDateTimeFilter
+  endTime: AWSDateTimeFilter
+  status: EnumKenTransferStatusFilter
+  eggKitTranportId: StringFilter
+  eggKitTranportation: EggKitTransportationRelationFilter
+  eggCollectionReportId: StringFilter
+  eggCollectionReport: EggCollectionReportRelationFilter
+  stockInfo: StockInfoRelationFilter
+  eggTransportRequestKens: EggTransportRequestKenListRelationFilter
+  eggs: EggListRelationFilter
+  NOT: [KenWhereInput!]
+  AND: [KenWhereInput!]
+  OR: [KenWhereInput!]
+}
+
+input KenOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input KenOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  barCode: SortOrder
+  devices: DeviceOrderByRelationAggregateInput
+  scheduleTransferDate: SortOrder
+  startTime: SortOrder
+  endTime: SortOrder
+  status: SortOrder
+  eggKitTranportId: SortOrder
+  eggKitTranportation: EggKitTransportationOrderByInput
+  eggCollectionReportId: SortOrder
+  eggCollectionReport: EggCollectionReportOrderByInput
+  stockInfo: StockInfoOrderByInput
+  eggTransportRequestKens: EggTransportRequestKenOrderByRelationAggregateInput
+  eggs: EggOrderByRelationAggregateInput
+}
+
+input DeviceListRelationFilter {
+  every: DeviceWhereInput
+  some: DeviceWhereInput
+  none: DeviceWhereInput
+}
+
+input DeviceRelationFilter {
+  is: DeviceWhereInput
+  isNot: DeviceWhereInput
+}
+
+input DeviceWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  barCode: StringFilter
+  kenBarcode: StringFilter
+  ken: KenRelationFilter
+  eggCollectionReportId: StringFilter
+  eggCollectionReport: EggCollectionReportRelationFilter
+  eggs: EggListRelationFilter
+  NOT: [DeviceWhereInput!]
+  AND: [DeviceWhereInput!]
+  OR: [DeviceWhereInput!]
+}
+
+input DeviceOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input DeviceOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  barCode: SortOrder
+  kenBarcode: SortOrder
+  ken: KenOrderByInput
+  eggCollectionReportId: SortOrder
+  eggCollectionReport: EggCollectionReportOrderByInput
+  eggs: EggOrderByRelationAggregateInput
+}
+
+input EggListRelationFilter {
+  every: EggWhereInput
+  some: EggWhereInput
+  none: EggWhereInput
+}
+
+input EggRelationFilter {
+  is: EggWhereInput
+  isNot: EggWhereInput
+}
+
+input EggWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  index: IntFilter
+  grade: EnumEggGradeFilter
+  kenBarcode: StringFilter
+  ken: KenRelationFilter
+  deviceBarcode: StringFilter
+  device: DeviceRelationFilter
+  eggCollectionReportId: StringFilter
+  eggCollectionReport: EggCollectionReportRelationFilter
+  NOT: [EggWhereInput!]
+  AND: [EggWhereInput!]
+  OR: [EggWhereInput!]
+}
+
+input EggOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input EggOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  index: SortOrder
+  grade: SortOrder
+  kenBarcode: SortOrder
+  ken: KenOrderByInput
+  deviceBarcode: SortOrder
+  device: DeviceOrderByInput
+  eggCollectionReportId: SortOrder
+  eggCollectionReport: EggCollectionReportOrderByInput
+}
+
+input FileListRelationFilter {
+  every: FileWhereInput
+  some: FileWhereInput
+  none: FileWhereInput
+}
+
+input FileRelationFilter {
+  is: FileWhereInput
+  isNot: FileWhereInput
+}
+
+input FileWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  fileName: StringFilter
+  key: StringFilter
+  description: StringFilter
+  userId: StringFilter
+  user: UserRelationFilter
+  eggCollectionReportId: StringFilter
+  eggCollectionReport: EggCollectionReportRelationFilter
+  NOT: [FileWhereInput!]
+  AND: [FileWhereInput!]
+  OR: [FileWhereInput!]
+}
+
+input FileOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input FileOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  fileName: SortOrder
+  key: SortOrder
+  description: SortOrder
+  userId: SortOrder
+  user: UserOrderByInput
+  eggCollectionReportId: SortOrder
+  eggCollectionReport: EggCollectionReportOrderByInput
+}
+
+input StockInfoListRelationFilter {
+  every: StockInfoWhereInput
+  some: StockInfoWhereInput
+  none: StockInfoWhereInput
+}
+
+input StockInfoRelationFilter {
+  is: StockInfoWhereInput
+  isNot: StockInfoWhereInput
+}
+
+input StockInfoWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  stockinPlanDateStart: AWSDateTimeFilter
+  stockinPlanDateEnd: AWSDateTimeFilter
+  stockoutPlanDateStart: AWSDateTimeFilter
+  stockoutPlanDateEnd: AWSDateTimeFilter
+  stockinPlanDate: AWSDateTimeFilter
+  stockinStartTime: AWSDateTimeFilter
+  stockinEndTime: AWSDateTimeFilter
+  stockoutPlanDate: AWSDateTimeFilter
+  stockoutStartTime: AWSDateTimeFilter
+  stockoutEndTime: AWSDateTimeFilter
+  barCode: StringFilter
+  eggApplicantId: StringFilter
+  eggApplicant: EggApplicantRelationFilter
+  ken: KenRelationFilter
+  kenId: StringFilter
+  appliedBy: StockMemberRelationFilter
+  appliedById: StringFilter
+  status: EnumStockInfoStatusFilter
+  tankInfo: StringFilter
+  eggTransportRequest: EggTransportRequestRelationFilter
+  eggTransportRequestId: StringFilter
+  destinationClinicId: StringFilter
+  destinationClinic: AffiliatedClinicRelationFilter
+  NOT: [StockInfoWhereInput!]
+  AND: [StockInfoWhereInput!]
+  OR: [StockInfoWhereInput!]
+}
+
+input StockInfoOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input StockInfoOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  stockinPlanDateStart: SortOrder
+  stockinPlanDateEnd: SortOrder
+  stockoutPlanDateStart: SortOrder
+  stockoutPlanDateEnd: SortOrder
+  stockinPlanDate: SortOrder
+  stockinStartTime: SortOrder
+  stockinEndTime: SortOrder
+  stockoutPlanDate: SortOrder
+  stockoutStartTime: SortOrder
+  stockoutEndTime: SortOrder
+  barCode: SortOrder
+  eggApplicantId: SortOrder
+  eggApplicant: EggApplicantOrderByInput
+  ken: KenOrderByInput
+  kenId: SortOrder
+  appliedBy: StockMemberOrderByInput
+  appliedById: SortOrder
+  status: SortOrder
+  tankInfo: SortOrder
+  eggTransportRequest: EggTransportRequestOrderByInput
+  eggTransportRequestId: SortOrder
+  destinationClinicId: SortOrder
+  destinationClinic: AffiliatedClinicOrderByInput
+}
+
+input EggKitTransportationListRelationFilter {
+  every: EggKitTransportationWhereInput
+  some: EggKitTransportationWhereInput
+  none: EggKitTransportationWhereInput
+}
+
+input EggKitTransportationRelationFilter {
+  is: EggKitTransportationWhereInput
+  isNot: EggKitTransportationWhereInput
+}
+
+input EggKitTransportationWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  documentSendDate: AWSDateTimeFilter
+  barcodeSheetCount: IntFilter
+  eggApplicantId: StringFilter
+  eggApplicant: EggApplicantRelationFilter
+  kens: KenListRelationFilter
+  NOT: [EggKitTransportationWhereInput!]
+  AND: [EggKitTransportationWhereInput!]
+  OR: [EggKitTransportationWhereInput!]
+}
+
+input EggKitTransportationOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input EggKitTransportationOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  documentSendDate: SortOrder
+  barcodeSheetCount: SortOrder
+  eggApplicantId: SortOrder
+  eggApplicant: EggApplicantOrderByInput
+  kens: KenOrderByRelationAggregateInput
+}
+
+input EggTransportRequestListRelationFilter {
+  every: EggTransportRequestWhereInput
+  some: EggTransportRequestWhereInput
+  none: EggTransportRequestWhereInput
+}
+
+input EggTransportRequestRelationFilter {
+  is: EggTransportRequestWhereInput
+  isNot: EggTransportRequestWhereInput
+}
+
+input EggTransportRequestWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  destinationClinicId: StringFilter
+  destinationClinic: AffiliatedClinicRelationFilter
+  requestById: StringFilter
+  requestBy: UserRelationFilter
+  eggTransportRequestKens: EggTransportRequestKenListRelationFilter
+  billings: BillingListRelationFilter
+  stockInfo: StockInfoListRelationFilter
+  NOT: [EggTransportRequestWhereInput!]
+  AND: [EggTransportRequestWhereInput!]
+  OR: [EggTransportRequestWhereInput!]
+}
+
+input EggTransportRequestOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input EggTransportRequestOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  destinationClinicId: SortOrder
+  destinationClinic: AffiliatedClinicOrderByInput
+  requestById: SortOrder
+  requestBy: UserOrderByInput
+  eggTransportRequestKens: EggTransportRequestKenOrderByRelationAggregateInput
+  billings: BillingOrderByRelationAggregateInput
+  stockInfo: StockInfoOrderByRelationAggregateInput
+}
+
+input EggTransportRequestKenListRelationFilter {
+  every: EggTransportRequestKenWhereInput
+  some: EggTransportRequestKenWhereInput
+  none: EggTransportRequestKenWhereInput
+}
+
+input EggTransportRequestKenRelationFilter {
+  is: EggTransportRequestKenWhereInput
+  isNot: EggTransportRequestKenWhereInput
+}
+
+input EggTransportRequestKenOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input EggTransportRequestKenOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  kenId: SortOrder
+  ken: KenOrderByInput
+  eggTransportRequestId: SortOrder
+  eggTransportRequest: EggTransportRequestOrderByInput
+  clinicStatus: SortOrder
+  adminStatus: SortOrder
+  expectedAcceptanceDate: SortOrder
+  personInChargeId: SortOrder
+  personInCharge: PersonInChargeOrderByInput
+  clinicDocumentId: SortOrder
+  scheduledDeliveryDate: SortOrder
+  startTime: SortOrder
+  endTime: SortOrder
+  expectedUseDate: SortOrder
+  userDocumentId: SortOrder
+  isConfirmedSpermTestByClinic: SortOrder
+  isExplainedByClinic: SortOrder
+  isConfirmedSpermTestByUser: SortOrder
+  isConfirmedStorageFeeByUser: SortOrder
+}
+
+input PersonInChargeListRelationFilter {
+  every: PersonInChargeWhereInput
+  some: PersonInChargeWhereInput
+  none: PersonInChargeWhereInput
+}
+
+input PersonInChargeRelationFilter {
+  is: PersonInChargeWhereInput
+  isNot: PersonInChargeWhereInput
+}
+
+input PersonInChargeWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  lastName: StringFilter
+  firstName: StringFilter
+  fullName: StringFilter
+  lastNameKana: StringFilter
+  fullNameKana: StringFilter
+  firstNameKana: StringFilter
+  clinicId: StringFilter
+  clinic: AffiliatedClinicRelationFilter
+  eggTransportRequestKens: EggTransportRequestKenListRelationFilter
+  NOT: [PersonInChargeWhereInput!]
+  AND: [PersonInChargeWhereInput!]
+  OR: [PersonInChargeWhereInput!]
+}
+
+input PersonInChargeOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PersonInChargeOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  lastName: SortOrder
+  firstName: SortOrder
+  fullName: SortOrder
+  lastNameKana: SortOrder
+  fullNameKana: SortOrder
+  firstNameKana: SortOrder
+  clinicId: SortOrder
+  clinic: AffiliatedClinicOrderByInput
+  eggTransportRequestKens: EggTransportRequestKenOrderByRelationAggregateInput
+}
+
+input BillingListRelationFilter {
+  every: BillingWhereInput
+  some: BillingWhereInput
+  none: BillingWhereInput
+}
+
+input BillingRelationFilter {
+  is: BillingWhereInput
+  isNot: BillingWhereInput
+}
+
+input BillingWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  total: FloatFilter
+  amount: FloatFilter
+  feeAmount: FloatFilter
+  discount: FloatFilter
+  billingDate: AWSDateTimeFilter
+  lastBillingDate: AWSDateTimeFilter
+  description: StringFilter
+  billingType: EnumBillingTypeFilter
+  status: EnumBillingStatusFilter
+  eggApplicant: EggApplicantRelationFilter
+  eggApplicantId: StringFilter
+  appliedById: StringFilter
+  appliedBy: UserRelationFilter
+  eggTransportRequestId: StringFilter
+  eggTransportRequest: EggTransportRequestRelationFilter
+  transactions: PaymentTransactionListRelationFilter
+  NOT: [BillingWhereInput!]
+  AND: [BillingWhereInput!]
+  OR: [BillingWhereInput!]
+}
+
+input BillingOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input BillingOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  total: SortOrder
+  amount: SortOrder
+  feeAmount: SortOrder
+  discount: SortOrder
+  billingDate: SortOrder
+  lastBillingDate: SortOrder
+  description: SortOrder
+  billingType: SortOrder
+  status: SortOrder
+  eggApplicant: EggApplicantOrderByInput
+  eggApplicantId: SortOrder
+  appliedById: SortOrder
+  appliedBy: UserOrderByInput
+  eggTransportRequestId: SortOrder
+  eggTransportRequest: EggTransportRequestOrderByInput
+  transactions: PaymentTransactionOrderByRelationAggregateInput
+}
+
+input AreaListRelationFilter {
+  every: AreaWhereInput
+  some: AreaWhereInput
+  none: AreaWhereInput
+}
+
+input AreaRelationFilter {
+  is: AreaWhereInput
+  isNot: AreaWhereInput
+}
+
+input AreaWhereInput {
+  code: StringFilter
+  region: StringFilter
+  prefecture: StringFilter
+  prefectureKana: StringFilter
+  city: StringFilter
+  cityKana: StringFilter
+  address1: StringFilter
+  address1Kana: StringFilter
+  NOT: [AreaWhereInput!]
+  AND: [AreaWhereInput!]
+  OR: [AreaWhereInput!]
+}
+
+input AreaOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AreaOrderByInput {
+  code: SortOrder
+  region: SortOrder
+  prefecture: SortOrder
+  prefectureKana: SortOrder
+  city: SortOrder
+  cityKana: SortOrder
+  address1: SortOrder
+  address1Kana: SortOrder
+}
+
+input StockMemberListRelationFilter {
+  every: StockMemberWhereInput
+  some: StockMemberWhereInput
+  none: StockMemberWhereInput
+}
+
+input StockMemberRelationFilter {
+  is: StockMemberWhereInput
+  isNot: StockMemberWhereInput
+}
+
+input StockMemberWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  lastName: StringFilter
+  firstName: StringFilter
+  lastNameKana: StringFilter
+  firstNameKana: StringFilter
+  fullName: StringFilter
+  fullNameKana: StringFilter
+  stemCellId: StringFilter
+  stemCell: StemCellRelationFilter
+  stockInfos: StockInfoListRelationFilter
+  NOT: [StockMemberWhereInput!]
+  AND: [StockMemberWhereInput!]
+  OR: [StockMemberWhereInput!]
+}
+
+input StockMemberOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input StockMemberOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  lastName: SortOrder
+  firstName: SortOrder
+  lastNameKana: SortOrder
+  firstNameKana: SortOrder
+  fullName: SortOrder
+  fullNameKana: SortOrder
+  stemCellId: SortOrder
+  stemCell: StemCellOrderByInput
+  stockInfos: StockInfoOrderByRelationAggregateInput
+}
+
+input DocumentListRelationFilter {
+  every: DocumentWhereInput
+  some: DocumentWhereInput
+  none: DocumentWhereInput
+}
+
+input DocumentRelationFilter {
+  is: DocumentWhereInput
+  isNot: DocumentWhereInput
+}
+
+input DocumentWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  keyFile: StringFilter
+  fileId: StringFilter
+  description: StringFilter
+  storageType: EnumDocumentStorageTypeFilter
+  type: EnumDocumentTypeFilter
+  createdByUserId: StringFilter
+  status: EnumEggApplicantContractStatusFilter
+  createdBy: UserRelationFilter
+  NOT: [DocumentWhereInput!]
+  AND: [DocumentWhereInput!]
+  OR: [DocumentWhereInput!]
+}
+
+input DocumentOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input DocumentOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  keyFile: SortOrder
+  fileId: SortOrder
+  description: SortOrder
+  storageType: SortOrder
+  type: SortOrder
+  createdByUserId: SortOrder
+  status: SortOrder
+  createdBy: UserOrderByInput
+}
+
+input CouponListRelationFilter {
+  every: CouponWhereInput
+  some: CouponWhereInput
+  none: CouponWhereInput
+}
+
+input CouponRelationFilter {
+  is: CouponWhereInput
+  isNot: CouponWhereInput
+}
+
+input CouponWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  type: EnumCouponTypeFilter
+  benefitName: StringFilter
+  companyCode: StringFilter
+  discount: FloatFilter
+  users: UserListRelationFilter
+  userOldInfo: UserOldInfoListRelationFilter
+  NOT: [CouponWhereInput!]
+  AND: [CouponWhereInput!]
+  OR: [CouponWhereInput!]
+}
+
+input CouponOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input CouponOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  type: SortOrder
+  benefitName: SortOrder
+  companyCode: SortOrder
+  discount: SortOrder
+  users: UserOrderByRelationAggregateInput
+  userOldInfo: UserOldInfoOrderByRelationAggregateInput
+}
+
+input PaymentSubscriptionListRelationFilter {
+  every: PaymentSubscriptionWhereInput
+  some: PaymentSubscriptionWhereInput
+  none: PaymentSubscriptionWhereInput
+}
+
+input PaymentSubscriptionRelationFilter {
+  is: PaymentSubscriptionWhereInput
+  isNot: PaymentSubscriptionWhereInput
+}
+
+input PaymentSubscriptionWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  userId: StringFilter
+  user: UserRelationFilter
+  paymentDate: AWSDateTimeFilter
+  amount: FloatFilter
+  feeAmount: FloatFilter
+  billPlan: EnumBillPlanFilter
+  status: EnumSubscriptionStatusFilter
+  eggApplicantId: StringFilter
+  eggApplicant: EggApplicantRelationFilter
+  transactions: PaymentTransactionListRelationFilter
+  NOT: [PaymentSubscriptionWhereInput!]
+  AND: [PaymentSubscriptionWhereInput!]
+  OR: [PaymentSubscriptionWhereInput!]
+}
+
+input PaymentSubscriptionOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PaymentSubscriptionOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  userId: SortOrder
+  user: UserOrderByInput
+  paymentDate: SortOrder
+  amount: SortOrder
+  feeAmount: SortOrder
+  billPlan: SortOrder
+  status: SortOrder
+  eggApplicantId: SortOrder
+  eggApplicant: EggApplicantOrderByInput
+  transactions: PaymentTransactionOrderByRelationAggregateInput
+}
+
+input PaymentTransactionListRelationFilter {
+  every: PaymentTransactionWhereInput
+  some: PaymentTransactionWhereInput
+  none: PaymentTransactionWhereInput
+}
+
+input PaymentTransactionRelationFilter {
+  is: PaymentTransactionWhereInput
+  isNot: PaymentTransactionWhereInput
+}
+
+input PaymentTransactionWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  amount: StringFilter
+  transactionId: StringFilter
+  trackingId: StringFilter
+  subscriptionId: StringFilter
+  errorCode: StringFilter
+  response: StringFilter
+  subscription: PaymentSubscriptionRelationFilter
+  billingId: StringFilter
+  billing: BillingRelationFilter
+  type: EnumPaymentTransactionTypeFilter
+  status: EnumPaymentTransactionStatusFilter
+  NOT: [PaymentTransactionWhereInput!]
+  AND: [PaymentTransactionWhereInput!]
+  OR: [PaymentTransactionWhereInput!]
+}
+
+input PaymentTransactionOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PaymentTransactionOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  amount: SortOrder
+  transactionId: SortOrder
+  trackingId: SortOrder
+  subscriptionId: SortOrder
+  errorCode: SortOrder
+  response: SortOrder
+  subscription: PaymentSubscriptionOrderByInput
+  billingId: SortOrder
+  billing: BillingOrderByInput
+  type: SortOrder
+  status: SortOrder
+}
+
+input SystemConfigListRelationFilter {
+  every: SystemConfigWhereInput
+  some: SystemConfigWhereInput
+  none: SystemConfigWhereInput
+}
+
+input SystemConfigRelationFilter {
+  is: SystemConfigWhereInput
+  isNot: SystemConfigWhereInput
+}
+
+input SystemConfigWhereInput {
+  id: StringFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  type: EnumSystemConfigTypeFilter
+  key: StringFilter
+  value: StringFilter
+  numberValue: FloatFilter
+  NOT: [SystemConfigWhereInput!]
+  AND: [SystemConfigWhereInput!]
+  OR: [SystemConfigWhereInput!]
+}
+
+input SystemConfigOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input SystemConfigOrderByInput {
+  id: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  type: SortOrder
+  key: SortOrder
+  value: SortOrder
+  numberValue: SortOrder
+}
+
+input VerifyTokenListRelationFilter {
+  every: VerifyTokenWhereInput
+  some: VerifyTokenWhereInput
+  none: VerifyTokenWhereInput
+}
+
+input VerifyTokenRelationFilter {
+  is: VerifyTokenWhereInput
+  isNot: VerifyTokenWhereInput
+}
+
+input VerifyTokenWhereInput {
+  id: StringFilter
+  createdByUserId: StringFilter
+  createdBy: UserRelationFilter
+  createdAt: AWSDateTimeFilter
+  updatedAt: AWSDateTimeFilter
+  deletedAt: AWSDateTimeFilter
+  token: StringFilter
+  lastEmail: StringFilter
+  newEmail: StringFilter
+  bizType: EnumUpdateTypeFilter
+  NOT: [VerifyTokenWhereInput!]
+  AND: [VerifyTokenWhereInput!]
+  OR: [VerifyTokenWhereInput!]
+}
+
+input VerifyTokenOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input VerifyTokenOrderByInput {
+  id: SortOrder
+  createdByUserId: SortOrder
+  createdBy: UserOrderByInput
+  createdAt: SortOrder
+  updatedAt: SortOrder
+  deletedAt: SortOrder
+  token: SortOrder
+  lastEmail: SortOrder
+  newEmail: SortOrder
+  bizType: SortOrder
+}
+
+input EnumRoleFilter {
+  equals: Role
+  in: [Role!]
+  notIn: [Role!]
+  not: EnumRoleFilter
+}
+
+input EnumCouponTypeFilter {
+  equals: CouponType
+  in: [CouponType!]
+  notIn: [CouponType!]
+  not: EnumCouponTypeFilter
+}
+
+input EnumAddressReceiveEmailTypeFilter {
+  equals: AddressReceiveEmailType
+  in: [AddressReceiveEmailType!]
+  notIn: [AddressReceiveEmailType!]
+  not: EnumAddressReceiveEmailTypeFilter
+}
+
+input EnumBillPlanFilter {
+  equals: BillPlan
+  in: [BillPlan!]
+  notIn: [BillPlan!]
+  not: EnumBillPlanFilter
+}
+
+input EnumIdentityPaperTypeFilter {
+  equals: IdentityPaperType
+  in: [IdentityPaperType!]
+  notIn: [IdentityPaperType!]
+  not: EnumIdentityPaperTypeFilter
+}
+
+input EnumUserStatusFilter {
+  equals: UserStatus
+  in: [UserStatus!]
+  notIn: [UserStatus!]
+  not: EnumUserStatusFilter
+}
+
+input EnumAffiliatedClinicStatusFilter {
+  equals: AffiliatedClinicStatus
+  in: [AffiliatedClinicStatus!]
+  notIn: [AffiliatedClinicStatus!]
+  not: EnumAffiliatedClinicStatusFilter
+}
+
+input EnumInquiryTypeFilter {
+  equals: InquiryType
+  in: [InquiryType!]
+  notIn: [InquiryType!]
+  not: EnumInquiryTypeFilter
+}
+
+input EnumInquiryStatusFilter {
+  equals: InquiryStatus
+  in: [InquiryStatus!]
+  notIn: [InquiryStatus!]
+  not: EnumInquiryStatusFilter
+}
+
+input EnumEggApplicantStatusFilter {
+  equals: EggApplicantStatus
+  in: [EggApplicantStatus!]
+  notIn: [EggApplicantStatus!]
+  not: EnumEggApplicantStatusFilter
+}
+
+input EnumKenTransferStatusFilter {
+  equals: KenTransferStatus
+  in: [KenTransferStatus!]
+  notIn: [KenTransferStatus!]
+  not: EnumKenTransferStatusFilter
+}
+
+input EnumEggGradeFilter {
+  equals: EggGrade
+  in: [EggGrade!]
+  notIn: [EggGrade!]
+  not: EnumEggGradeFilter
+}
+
+input EnumStockInfoStatusFilter {
+  equals: StockInfoStatus
+  in: [StockInfoStatus!]
+  notIn: [StockInfoStatus!]
+  not: EnumStockInfoStatusFilter
+}
+
+input EnumEggTransportRequestStatusClinicSideFilter {
+  equals: EggTransportRequestStatusClinicSide
+  in: [EggTransportRequestStatusClinicSide!]
+  notIn: [EggTransportRequestStatusClinicSide!]
+  not: EnumEggTransportRequestStatusClinicSideFilter
+}
+
+input EnumEggTransportRequestStatusAdminSideFilter {
+  equals: EggTransportRequestStatusAdminSide
+  in: [EggTransportRequestStatusAdminSide!]
+  notIn: [EggTransportRequestStatusAdminSide!]
+  not: EnumEggTransportRequestStatusAdminSideFilter
+}
+
+input EnumBillingTypeFilter {
+  equals: BillingType
+  in: [BillingType!]
+  notIn: [BillingType!]
+  not: EnumBillingTypeFilter
+}
+
+input EnumBillingStatusFilter {
+  equals: BillingStatus
+  in: [BillingStatus!]
+  notIn: [BillingStatus!]
+  not: EnumBillingStatusFilter
+}
+
+input EnumDocumentStorageTypeFilter {
+  equals: DocumentStorageType
+  in: [DocumentStorageType!]
+  notIn: [DocumentStorageType!]
+  not: EnumDocumentStorageTypeFilter
+}
+
+input EnumDocumentTypeFilter {
+  equals: DocumentType
+  in: [DocumentType!]
+  notIn: [DocumentType!]
+  not: EnumDocumentTypeFilter
+}
+
+input EnumEggApplicantContractStatusFilter {
+  equals: EggApplicantContractStatus
+  in: [EggApplicantContractStatus!]
+  notIn: [EggApplicantContractStatus!]
+  not: EnumEggApplicantContractStatusFilter
+}
+
+input EnumSubscriptionStatusFilter {
+  equals: SubscriptionStatus
+  in: [SubscriptionStatus!]
+  notIn: [SubscriptionStatus!]
+  not: EnumSubscriptionStatusFilter
+}
+
+input EnumPaymentTransactionTypeFilter {
+  equals: PaymentTransactionType
+  in: [PaymentTransactionType!]
+  notIn: [PaymentTransactionType!]
+  not: EnumPaymentTransactionTypeFilter
+}
+
+input EnumPaymentTransactionStatusFilter {
+  equals: PaymentTransactionStatus
+  in: [PaymentTransactionStatus!]
+  notIn: [PaymentTransactionStatus!]
+  not: EnumPaymentTransactionStatusFilter
+}
+
+input EnumSystemConfigTypeFilter {
+  equals: SystemConfigType
+  in: [SystemConfigType!]
+  notIn: [SystemConfigType!]
+  not: EnumSystemConfigTypeFilter
+}
+
+input EnumUpdateTypeFilter {
+  equals: UpdateType
+  in: [UpdateType!]
+  notIn: [UpdateType!]
+  not: EnumUpdateTypeFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input AWSDateTimeFilter {
+  equals: AWSDateTime
+  in: [AWSDateTime!]
+  notIn: [AWSDateTime!]
+  lt: AWSDateTime
+  lte: AWSDateTime
+  gt: AWSDateTime
+  gte: AWSDateTime
+  not: AWSDateTimeFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
+input FloatFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatFilter
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}

@@ -1,0 +1,35 @@
+type Mutation {
+  # adds cognito userId as as allowed user to specific door
+  # Errors:
+  signUp(
+    email: String!
+    firstName: String!
+    lastName: String!
+    firstNameKana: String!
+    lastNameKana: String!
+  ): SignUpResponse!
+  logIn(email: String!, password: String!): Token!
+  signout: Boolean! @aws_cognito_user_pools
+}
+
+type Token {
+  token: String!
+  idToken: String!
+  refreshToken: String
+  expiredAt: Int!
+  userGroup: String!
+}
+type SignUpResponse {
+  id: String!
+  email: String!
+}
+
+type Query {
+  ## AUTHENTICATE
+  ## ROLE: USER
+  userMe: User! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  ## AUTHENTICATE
+  ## ROLE: CLINIC
+  clinicMe: AffiliatedClinic!
+    @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+}

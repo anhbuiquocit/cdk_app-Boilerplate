@@ -1,0 +1,102 @@
+##AUTHENTICATE
+type Ken @aws_cognito_user_pools {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  barCode: String!
+  devices(
+    where: DeviceWhereInput
+    skip: Int
+    take: Int
+    orderBy: [DeviceOrderByInput!]
+    cursor: DeviceWhereUniqueInput
+    distinct: DeviceScalarFieldEnum
+  ): [Device!]
+  eggCollectionReport: EggCollectionReport
+  noDevices: Int
+  noEggs: Int
+  stockInfo: StockInfo
+  status: KenTransferStatus
+  scheduleTransferDate: AWSDateTime
+  startTime: AWSDateTime
+  endTime: AWSDateTime
+}
+
+enum KenTransferStatusClinicSide {
+  WAIT_FOR_TRANSFER
+  TRANSFERRED
+}
+
+input CustomEggWhereInput {
+  all: Boolean!
+}
+
+input ClinicScheduleTransferDateForKenInput {
+  kenIds: [String!]!
+  scheduleTransferDate: AWSDate!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+  status: KenTransferStatusClinicSide!
+}
+
+enum KenTransferStatusAdminSide {
+  INIT
+  WAIT_FOR_WAREHOUSING
+  RECEIPT_DATE_CONFIRMED
+}
+
+input AdminUpdateTransferInput {
+  kenIds: [String!]!
+  scheduleTransferDate: AWSDate!
+  startTime: AWSDateTime!
+  endTime: AWSDateTime!
+  status: KenTransferStatusAdminSide!
+}
+
+input KenWhereUniqueInput {
+  id: String
+  barCode: String
+}
+
+##AUTHENTICATE
+type KenEdge @aws_cognito_user_pools {
+  node: Ken!
+  cursor: String!
+}
+
+##AUTHENTICATE
+type KenConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [KenEdge!]!
+  totalCount: Int!
+}
+
+extend type Query {
+  ##AUTHENTICATE
+  ##ERROR: UNAUTHORIZED
+  getKens(
+    where: KenWhereInput
+    customWhere: CustomEggWhereInput
+    orderBy: [KenOrderByInput!]
+    skip: Int
+    take: Int
+    cursor: KenWhereUniqueInput
+  ): KenConnection! @aws_cognito_user_pools
+  ##AUTHENTICATE
+  ##ERROR: NOT_FOUND, UNAUTHORIZED
+  getKen(where: KenWhereUniqueInput!): Ken! @aws_cognito_user_pools
+}
+
+type Mutation {
+  ## AUTHENTICATE
+  ## ROLE: CLINIC
+  clinicScheduleTransferDateForKen(
+    clinicScheduleTransferDateForKenInput: ClinicScheduleTransferDateForKenInput
+  ): Boolean! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  ## AUTHENTICATE
+  ## ROLE: ADMIN
+  adminUpdateTransfer(
+    adminUpdateTransferInput: AdminUpdateTransferInput
+  ): Boolean! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+}

@@ -5,6 +5,9 @@ node_modules
 .pnp
 .pnp.js
 
+# build
+dist
+
 # testing
 coverage
 
@@ -24,6 +27,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -31,3 +35,12 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# yarn 3 : https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

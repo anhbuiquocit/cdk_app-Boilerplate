@@ -1,0 +1,131 @@
+## AUTHENTICATE
+## ROLE: USER, CLINIC, ADMIN
+## Merge by EggTransportRequest and EggTransportRequestKen
+type EggTransportRequest
+  @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"]) {
+  id: String!
+  eggTransportRequestId: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  expectedUseDate: AWSDateTime!
+  destinationClinicId: String!
+  destinationClinic: AffiliatedClinic
+  isConfirmedSpermTestByUser: Boolean!
+  isConfirmedStorageFeeByUser: Boolean!
+  userDocumentId: String!
+  requestById: String!
+  requestBy: User
+  ken: Ken
+  expectedAcceptanceDate: AWSDateTime
+  personInChargeId: String
+  personInCharge: PersonInCharge
+  clinicDocumentId: String
+  isConfirmedSpermTestByClinic: Boolean
+  isExplainedByClinic: Boolean
+  clinicStatus: EggTransportRequestStatusClinicSide
+  adminStatus: EggTransportRequestStatusAdminSide
+}
+
+input CreateEggTransportRequestInput {
+  expectedUseDate: AWSDate!
+  destinationClinicId: String!
+  kenIds: [String!]!
+  userDocumentId: String!
+  isConfirmedSpermTestByUser: Boolean
+  isConfirmedStorageFeeByUser: Boolean
+  transferFee: Int
+}
+
+input ClinicConfirmEggTransportRequestInput {
+  id: String!
+  expectedAcceptanceDate: AWSDate!
+  personInChargeId: String!
+  clinicDocumentId: String!
+  isConfirmedSpermTestByClinic: Boolean
+  isExplainedByClinic: Boolean
+}
+
+enum EggTransportRequestAdminSide {
+  WAIT_FOR_DELIVERY
+  ISSUE_DATE_CONFIRMED
+  CANCEL
+}
+
+input AdminUpdateEggTransportRequestInput {
+  id: String!
+  scheduledDeliveryDate: AWSDate
+  startTime: AWSDateTime
+  endTime: AWSDateTime
+  status: EggTransportRequestAdminSide!
+}
+
+input EggTransportRequestWhereUniqueInput {
+  id: String
+}
+
+input ClinicAcceptEggTransportRequestInput {
+  id: String!
+}
+
+##AUTHENTICATE
+type EggTransportRequestEdge @aws_cognito_user_pools {
+  node: EggTransportRequest!
+  cursor: String!
+}
+
+##AUTHENTICATE
+type EggTransportRequestConnection @aws_cognito_user_pools {
+  pageInfo: PageInfo!
+  edges: [EggTransportRequestEdge!]!
+  totalCount: Int!
+}
+
+extend type EggTransportRequestKenWhereInput {
+  requestById: StringFilter
+  requestBy: UserWhereInput
+  destinationClinicId: StringFilter
+  destinationClinic: AffiliatedClinicWhereInput
+}
+
+extend type Query {
+  ##AUTHENTICATE
+  ## ROLE: USER, CLINIC, ADMIN
+  getEggTransportRequests(
+    where: EggTransportRequestKenWhereInput
+    orderBy: [EggTransportRequestOrderByInput!]
+    skip: Int
+    take: Int
+    cursor: EggTransportRequestWhereUniqueInput
+  ): EggTransportRequestConnection!
+    @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"])
+  ##AUTHENTICATE
+  ## ROLE: USER, CLINIC, ADMIN
+  getEggTransportRequest(
+    where: EggTransportRequestWhereUniqueInput!
+  ): EggTransportRequest!
+    @aws_cognito_user_pools(cognito_groups: ["USER", "CLINIC", "ADMIN"])
+}
+
+type Mutation {
+  ## AUTHENTICATE
+  ## ROLE: USER
+  createEggTransportRequest(
+    createEggTransportRequestInput: CreateEggTransportRequestInput!
+  ): String! @aws_cognito_user_pools(cognito_groups: ["USER"])
+  ## AUTHENTICATE
+  ## ROLE: CLINIC
+  clinicConfirmEggTransportRequest(
+    clinicConfirmEggTransportRequestInput: ClinicConfirmEggTransportRequestInput!
+  ): String! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  ## AUTHENTICATE
+  ## ROLE: CLINIC
+  clinicAcceptEggTransportRequest(
+    clinicAcceptEggTransportRequestInput: ClinicAcceptEggTransportRequestInput!
+  ): Boolean! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  # AUTHENTICATE
+  # ROLE: ADMIN
+  adminUpdateEggTransportRequest(
+    adminUpdateEggTransportRequestInput: AdminUpdateEggTransportRequestInput
+  ): String! @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+}

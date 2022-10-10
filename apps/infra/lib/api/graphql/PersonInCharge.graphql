@@ -1,0 +1,80 @@
+## AUTHENTICATE
+## ROLE: CLINIC
+type PersonInCharge @aws_cognito_user_pools(cognito_groups: ["CLINIC"]) {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  firstName: String!
+  lastName: String!
+  fullName: String
+  firstNameKana: String!
+  lastNameKana: String!
+  fullNameKana: String
+}
+
+input CreatePersonInChargeInput {
+  firstName: String!
+  lastName: String!
+  firstNameKana: String!
+  lastNameKana: String!
+}
+
+input PersonInChargeWhereUniqueInput {
+  id: String
+}
+
+input UpdatePersonInChargeInput {
+  id: String!
+  firstName: String!
+  lastName: String!
+  firstNameKana: String!
+  lastNameKana: String!
+}
+
+## AUTHENTICATE
+## ROLE: CLINIC
+type PersonInChargeEdge @aws_cognito_user_pools(cognito_groups: ["CLINIC"]) {
+  node: PersonInCharge!
+  cursor: String!
+}
+
+## AUTHENTICATE
+## ROLE: CLINIC
+type PersonInChargeConnection
+  @aws_cognito_user_pools(cognito_groups: ["CLINIC"]) {
+  pageInfo: PageInfo!
+  edges: [PersonInChargeEdge!]!
+  totalCount: Int!
+}
+
+extend type Query {
+  ## AUTHENTICATE
+  ## ROLE: CLINIC
+  getPersonInCharge(where: PersonInChargeWhereUniqueInput!): PersonInCharge!
+    @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  ## AUTHENTICATE
+  ## ROLE: CLINIC
+  getPersonInCharges(
+    where: PersonInChargeWhereInput
+    orderBy: PersonInChargeOrderByInput
+    skip: Int
+    take: Int
+    cursor: PersonInChargeWhereUniqueInput
+  ): PersonInChargeConnection!
+    @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+}
+
+type Mutation {
+  ## AUTHENTICATE
+  ## ROLE: CLINIC
+  createPersonInCharge(
+    createPersonInChargeInput: CreatePersonInChargeInput!
+  ): String! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  updatePersonInCharge(
+    updatePersonInChargeInput: UpdatePersonInChargeInput!
+  ): PersonInCharge! @aws_cognito_user_pools(cognito_groups: ["CLINIC"])
+  deletePersonInCharge(
+    deletePersonInChargeInput: PersonInChargeWhereUniqueInput!
+  ): String! @aws_cognito_user_pools(cognito_groups: ["CLINIC"]) 
+}

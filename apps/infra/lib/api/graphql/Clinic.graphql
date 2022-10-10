@@ -1,0 +1,33 @@
+input RegisterClinicInput {
+  representativeDirector: String!
+  clinicName: String!
+  emailClinic: AWSEmail!
+  password: String!
+  phoneNumber: String!
+  postalCode: String!
+  prefectures: String
+  municipalities: String
+  buildingName: String
+  address1: String!
+  address2: String!
+  address3: String!
+  address4: String!
+}
+
+input ClinicSignUpInput {
+  clinicName: String!
+  email: AWSEmail!
+}
+type PermanentRegisterResponse {
+  id: String
+}
+type ClinicSignUpResponse {
+  id: String
+  email: AWSEmail
+}
+extend type Mutation {
+  signupClinic(ClinicSignUpInput: ClinicSignUpInput!): ClinicSignUpResponse!
+  permanentRegisterClinic(
+    data: RegisterClinicInput!
+  ): PermanentRegisterResponse!
+}

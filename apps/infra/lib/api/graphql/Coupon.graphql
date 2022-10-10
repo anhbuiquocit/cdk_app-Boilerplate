@@ -1,0 +1,71 @@
+## NOT AUTHENTICATE
+type Coupon @aws_cognito_user_pools @aws_api_key {
+  id: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  deletedAt: AWSDateTime
+  type: CouponType!
+  benefitName: String!
+  companyCode: String
+  discount: Float!
+}
+
+input CouponWhereUniqueInput {
+  id: String!
+}
+
+## NOT AUTHENTICATE
+type CouponEdge @aws_cognito_user_pools @aws_api_key {
+  node: Coupon!
+  cursor: String!
+}
+
+## NOT AUTHENTICATE
+type CouponConnection @aws_cognito_user_pools @aws_api_key {
+  pageInfo: PageInfo!
+  edges: [CouponEdge!]!
+  totalCount: Int!
+}
+
+input CreateCouponInput {
+  type: CouponType!
+  benefitName: String!
+  companyCode: String
+  discount: Float!
+}
+
+input UpdateCouponInput {
+  type: CouponType!
+  benefitName: String!
+  companyCode: String
+  discount: Float!
+}
+
+extend type Query {
+  ## NOT AUTHENTICATE
+  getCoupon(where: CouponWhereUniqueInput!): Coupon! @aws_cognito_user_pools @aws_api_key
+  ## NOT AUTHENTICATE
+  getCoupons(
+    where: CouponWhereInput
+    skip: Int
+    take: Int
+    orderBy: [CouponOrderByInput!]
+    distinct: [CouponScalarFieldEnum!]
+    cursor: CouponWhereUniqueInput
+  ): CouponConnection! @aws_cognito_user_pools @aws_api_key
+}
+
+extend type Mutation {
+  ## AUTHENTICATE
+  ## ROLE: ADMIN
+  createCoupon(data: CreateCouponInput!): String!
+    @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  ## AUTHENTICATE
+  ## ROLE: ADMIN
+  updateCoupon(id: String!, data: UpdateCouponInput!): String!
+    @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+  ## AUTHENTICATE
+  ## ROLE: ADMIN
+  deleteCoupon(id: String!): String!
+    @aws_cognito_user_pools(cognito_groups: ["ADMIN"])
+}

@@ -1,0 +1,25 @@
+{
+  "extends": "config/tsconfig.base.json",
+  "display": "Next.js",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2018",
+    "module": "commonjs",
+    "baseUrl": "./",
+    "outDir": "build",
+    "esModuleInterop": true,
+    "incremental": false,
+    "noEmit": true
+  },
+  "include": ["bin", "lib"],
+  "exclude": [
+    "node_modules",
+    ".turbo",
+    "coverage",
+    "dist",
+    "cdk.out",
+    "test",
+    "**/*.test.ts"
+  ]
+}
