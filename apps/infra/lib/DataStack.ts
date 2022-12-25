@@ -1,24 +1,12 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import { EnvVarStack } from "./helpers/envConfig";
 
 interface DataStackProps extends cdk.StackProps {
   appName: string;
   vpc: cdk.aws_ec2.Vpc;
   privateSg: cdk.aws_ec2.SecurityGroup;
-  env: cdk.Environment & {
-    MAIL_SECRET: String;
-    MAIL_REGION: String;
-    MAIL_FROM: String;
-    MAIL_REPLY_TO: String;
-    VERIFY_SIGN_UP_PATH: String;
-    APP_REGION: String;
-    AWS_S3_ASSET_BUCKET_NAME: String;
-    WEBSITE_URL: String;
-    CLIENT_ID_CLOUD_SIGN: String;
-    CONTENT_TYPE_URL_ENCODED: String;
-    RESOURCE_URI_CLOUD_SIGN_TOKEN: String;
-    Environment: string;
-  };
+  env: EnvVarStack;
 }
 
 export class DataStack extends cdk.Stack {
@@ -49,17 +37,6 @@ export class DataStack extends cdk.Stack {
     vpc: cdk.aws_ec2.Vpc;
     privateSg: cdk.aws_ec2.SecurityGroup;
     env: cdk.Environment & {
-      MAIL_SECRET: String;
-      MAIL_REGION: String;
-      MAIL_FROM: String;
-      MAIL_REPLY_TO: String;
-      VERIFY_SIGN_UP_PATH: String;
-      APP_REGION: String;
-      AWS_S3_ASSET_BUCKET_NAME: String;
-      WEBSITE_URL: String;
-      CLIENT_ID_CLOUD_SIGN: String;
-      CONTENT_TYPE_URL_ENCODED: String;
-      RESOURCE_URI_CLOUD_SIGN_TOKEN: String;
       Environment: string;
     };
   }): {
@@ -78,8 +55,8 @@ export class DataStack extends cdk.Stack {
           subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_NAT,
         },
         removalPolicy: cdk.RemovalPolicy.DESTROY,
-        description: 'An all private subnets group for the DB',
-      },
+        description: "An all private subnets group for the DB",
+      }
     );
 
     // Create the Serverless Aurora DB cluster
@@ -91,10 +68,10 @@ export class DataStack extends cdk.Stack {
         // Set the engine to Postgres
         parameterGroup: cdk.aws_rds.ParameterGroup.fromParameterGroupName(
           this,
-          'ParameterGroup',
-          'default.aurora-postgresql10',
+          "ParameterGroup",
+          "default.aurora-postgresql10"
         ),
-        defaultDatabaseName: 'main',
+        defaultDatabaseName: "main",
         enableDataApi: true,
         vpc,
         subnetGroup,
@@ -105,7 +82,7 @@ export class DataStack extends cdk.Stack {
         },
         securityGroups: [privateSg],
         removalPolicy: cdk.RemovalPolicy.DESTROY,
-      },
+      }
     );
     return { cluster, subnetGroup };
   }

@@ -1,18 +1,7 @@
-import * as cdk from 'aws-cdk-lib';
+import * as cdk from "aws-cdk-lib";
 interface StorageStackProps extends cdk.StackProps {
   appName: string;
   env: cdk.Environment & {
-    MAIL_SECRET: String;
-    MAIL_REGION: String;
-    MAIL_FROM: String;
-    MAIL_REPLY_TO: String;
-    VERIFY_SIGN_UP_PATH: String;
-    APP_REGION: String;
-    AWS_S3_ASSET_BUCKET_NAME: String;
-    WEBSITE_URL: String;
-    CLIENT_ID_CLOUD_SIGN: String;
-    CONTENT_TYPE_URL_ENCODED: String;
-    RESOURCE_URI_CLOUD_SIGN_TOKEN: String;
     Environment: string;
   };
 }
@@ -58,7 +47,7 @@ export class StorageStack extends cdk.Stack {
         //     ],
         //   },
         // ],
-      },
+      }
     );
 
     this.assetBucket = new cdk.aws_s3.Bucket(
@@ -78,11 +67,11 @@ export class StorageStack extends cdk.Stack {
               cdk.aws_s3.HttpMethods.POST,
               cdk.aws_s3.HttpMethods.PUT,
             ],
-            allowedOrigins: ['*'],
-            allowedHeaders: ['*'],
+            allowedOrigins: ["*"],
+            allowedHeaders: ["*"],
           },
         ],
-      },
+      }
     );
 
     // 👇 grant access to bucket

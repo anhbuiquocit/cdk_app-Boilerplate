@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "prisma format",
+    "clean": "rm -rf .turbo && rm -rf node_modules",
+    "prisma:migratedev": "yarn prisma migrate dev",
+    "prisma:generate": "yarn prisma generate",
+    "prisma:dbpull": "yarn prisma db pull",
+    "prisma:dbpush": "yarn prisma db push"
   },
   "author": "",
   "license": "ISC",

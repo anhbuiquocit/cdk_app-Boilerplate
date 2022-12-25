@@ -1,10 +1,10 @@
-import * as cdk from 'aws-cdk-lib';
+import * as cdk from "aws-cdk-lib";
 import {
   LambdaIntegration,
   PassthroughBehavior,
-} from 'aws-cdk-lib/aws-apigateway';
-import { Construct } from 'constructs';
-import { EnvApiStack } from '../helpers/envConfig';
+} from "aws-cdk-lib/aws-apigateway";
+import { Construct } from "constructs";
+import { EnvVarStack } from "../helpers/envConfig";
 
 export interface ApiGateWayStackProps extends cdk.NestedStackProps {
   appName: string;
@@ -15,7 +15,7 @@ export interface ApiGateWayStackProps extends cdk.NestedStackProps {
   iotDataEndpoint: string;
   userPoolClient: cdk.aws_cognito.UserPoolClient;
   lambdaLayers: cdk.aws_lambda.LayerVersion[];
-  env: EnvApiStack;
+  env: EnvVarStack;
   resolvers: FuncType[];
 }
 export interface FuncType {
@@ -76,11 +76,11 @@ export class ApiGateWayStack extends cdk.NestedStack {
     iotDataEndpoint: string;
     userPoolId: string;
     userPoolClientId: string;
-    env: EnvApiStack;
+    env: EnvVarStack;
     resolver: FuncType;
   }): void {
     // const resolvers = getResolverNames();
-
+    console.log("env: ", env);
     const { policies = [], funcName } = resolver;
     const postFn = new cdk.aws_lambda.Function(
       this,
@@ -92,9 +92,9 @@ export class ApiGateWayStack extends cdk.NestedStack {
         runtime: cdk.aws_lambda.Runtime.NODEJS_14_X,
         layers: lambdaLayers,
         code: new cdk.aws_lambda.AssetCode(
-          getResolverBuildPathCustomLambFunc({ funcName }),
+          getResolverBuildPathCustomLambFunc({ funcName })
         ),
-        handler: 'index.handler',
+        handler: "index.handler",
         architecture: cdk.aws_lambda.Architecture.ARM_64,
         memorySize: 1024,
         // logRetention: cdk.aws_logs.RetentionDays.THREE_MONTHS,
@@ -103,20 +103,10 @@ export class ApiGateWayStack extends cdk.NestedStack {
           COGNITO_USERPOOL_ID: userPoolId,
           USER_POOL_CLIENT_ID: userPoolClientId,
           IOT_DATA_ENDPOINT: iotDataEndpoint,
-          SECRET_ID: cluster?.secret?.secretArn || '',
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-          MAIL_FROM: env.MAIL_FROM || '',
-          VERIFY_SIGN_UP_PATH: env.VERIFY_SIGN_UP_PATH || '',
-          MAIL_SECRET: env.MAIL_SECRET || '',
-          MAIL_REGION: env.MAIL_REGION || '',
-          AWS_S3_BUCKET_NAME: env.AWS_S3_ASSET_BUCKET_NAME || '',
-          WEBSITE_URL: env.WEBSITE_URL,
-          Environment: env.Environment,
-          CLIENT_ID_CLOUD_SIGN: env.CLIENT_ID_CLOUD_SIGN,
-          CONTENT_TYPE_URL_ENCODED: env.CONTENT_TYPE_URL_ENCODED,
-          RESOURCE_URI_CLOUD_SIGN_TOKEN: env.RESOURCE_URI_CLOUD_SIGN_TOKEN,
+          SECRET_ID: cluster?.secret?.secretArn || "",
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
         },
-      },
+      }
     );
 
     // Grant extra policies to lambda function
@@ -132,31 +122,31 @@ export class ApiGateWayStack extends cdk.NestedStack {
       {
         handler: postFn,
         proxy: false,
-      },
+      }
     );
     const funcfuncApiGateway = funcApi.root.addResource(
-      `${funcName}_apiGateway`,
+      `${funcName}_apiGateway`
     );
     funcfuncApiGateway.addMethod(
-      'POST',
+      "POST",
       new LambdaIntegration(postFn, {
-        integrationResponses: [{ statusCode: '200' }],
+        integrationResponses: [{ statusCode: "200" }],
         passthroughBehavior: PassthroughBehavior.NEVER,
         requestTemplates: {
-          'application/json': '{ "statusCode": 200 }',
+          "application/json": '{ "statusCode": 200 }',
         },
         proxy: false,
       }),
       {
         methodResponses: [
           {
-            statusCode: '200',
+            statusCode: "200",
             responseModels: {
-              'application/json': cdk.aws_apigateway.Model.EMPTY_MODEL,
+              "application/json": cdk.aws_apigateway.Model.EMPTY_MODEL,
             },
           },
         ],
-      },
+      }
     );
   }
 }

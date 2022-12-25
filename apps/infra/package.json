@@ -4,7 +4,13 @@
   "description": "",
   "main": "jest.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "lint": "eslint --quiet --fix ./",
+    "cdk": "cdk",
+    "cdk-dev": "yarn cdk -c config=dev --profile=grace-dev --verbose",
+    "deploy-all": "yarn cdk-dev deploy -c config=dev --all --require-approval never"
   },
   "author": "",
   "license": "ISC",

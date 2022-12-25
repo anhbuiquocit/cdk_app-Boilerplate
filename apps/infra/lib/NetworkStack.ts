@@ -1,6 +1,5 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
 interface NetworkStackProps extends cdk.StackProps {
   appName: string;
   bastionSshKeyName: string;
@@ -41,7 +40,7 @@ export class NetworkStack extends cdk.Stack {
       //   eipAllocationIds: allocationIds,
       // }),
       natGatewayProvider: cdk.aws_ec2.NatProvider.instance({
-        instanceType: new cdk.aws_ec2.InstanceType('t2.micro'),
+        instanceType: new cdk.aws_ec2.InstanceType("t2.micro"),
       }),
       maxAzs: 2,
       // enableDnsHostnames: true,
@@ -49,17 +48,17 @@ export class NetworkStack extends cdk.Stack {
       subnetConfiguration: [
         {
           cidrMask: 22,
-          name: 'public',
+          name: "public",
           subnetType: cdk.aws_ec2.SubnetType.PUBLIC,
         },
         {
           cidrMask: 22,
-          name: 'private1',
+          name: "private1",
           subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_NAT,
         },
         {
           cidrMask: 22,
-          name: 'private2',
+          name: "private2",
           subnetType: cdk.aws_ec2.SubnetType.PRIVATE_ISOLATED,
         },
       ],
@@ -85,7 +84,7 @@ export class NetworkStack extends cdk.Stack {
       //   (child) => child.node.id === 'NATGateway',
       // ) as cdk.aws_ec2.CfnNatGateway;
       // Delete the default EIP created by CDK
-      subnet.node.tryRemoveChild('EIP');
+      subnet.node.tryRemoveChild("EIP");
       // Override the allocationId on the NATGateway
       // natGateway.allocationId = allocationIds[index];
     });
@@ -96,13 +95,13 @@ export class NetworkStack extends cdk.Stack {
       `${appName}-private-sg-1`,
       {
         vpc,
-        securityGroupName: 'private-sg-1',
-      },
+        securityGroupName: "private-sg-1",
+      }
     );
     privateSg.addIngressRule(
       privateSg,
       cdk.aws_ec2.Port.allTraffic(),
-      'allow internal SG access',
+      "allow internal SG access"
     );
     return { vpc, privateSg };
   }
@@ -120,10 +119,10 @@ export class NetworkStack extends cdk.Stack {
   }): void {
     // Fetch the latest Ubuntu AMI
     const ami = new cdk.aws_ec2.LookupMachineImage({
-      name: 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',
-      filters: { 'virtualization-type': ['hvm'] },
+      name: "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*",
+      filters: { "virtualization-type": ["hvm"] },
       // Canonical AWS Account ID
-      owners: ['099720109477'],
+      owners: ["099720109477"],
     });
 
     // EC2 instance and public Security Group
@@ -132,29 +131,29 @@ export class NetworkStack extends cdk.Stack {
       `${appName}-public-sg-1`,
       {
         vpc,
-        securityGroupName: 'public-sg-1',
-      },
+        securityGroupName: "public-sg-1",
+      }
     );
     publicSg.addIngressRule(
       cdk.aws_ec2.Peer.anyIpv4(),
       cdk.aws_ec2.Port.tcp(22),
-      'allow SSH access',
+      "allow SSH access"
     );
 
     privateSg.addIngressRule(
       publicSg,
       cdk.aws_ec2.Port.tcp(5432),
-      'allow Aurora Serverless Postgres access',
+      "allow Aurora Serverless Postgres access"
     );
 
     // eslint-disable-next-line no-new
-    new cdk.aws_ec2.Instance(this, 'jump-box', {
+    new cdk.aws_ec2.Instance(this, "jump-box", {
       vpc,
       securityGroup: publicSg,
       vpcSubnets: { subnetType: cdk.aws_ec2.SubnetType.PUBLIC },
       instanceType: cdk.aws_ec2.InstanceType.of(
         cdk.aws_ec2.InstanceClass.T2,
-        cdk.aws_ec2.InstanceSize.MICRO,
+        cdk.aws_ec2.InstanceSize.MICRO
       ),
       machineImage: cdk.aws_ec2.MachineImage.genericLinux({
         [this.region]: ami.getImage(this).imageId,

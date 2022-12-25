@@ -1,9 +1,9 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import { getResolverBuildPath } from './getResolverBuildPath';
-import { EnvApiStack } from '../helpers/envConfig';
-import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
-import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import { getResolverBuildPath } from "./getResolverBuildPath";
+import { EnvVarStack } from "../helpers/envConfig";
+import { Rule, Schedule } from "aws-cdk-lib/aws-events";
+import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 
 export interface CronStackProps extends cdk.NestedStackProps {
   appName: string;
@@ -14,7 +14,7 @@ export interface CronStackProps extends cdk.NestedStackProps {
   iotDataEndpoint: string;
   userPoolClient: cdk.aws_cognito.UserPoolClient;
   lambdaLayers: cdk.aws_lambda.LayerVersion[];
-  env: EnvApiStack;
+  env: EnvVarStack;
   resolvers: CronType[];
 }
 export interface CronType {
@@ -70,10 +70,11 @@ export class CronStack extends cdk.NestedStack {
     iotDataEndpoint: string;
     userPoolId: string;
     userPoolClientId: string;
-    env: EnvApiStack;
+    env: EnvVarStack;
     resolver: CronType;
   }): void {
     // const resolvers = getResolverNames();
+    console.log("env: ", env);
     const { typeName, fieldName, policies = [], cronOptions = {} } = resolver;
     const postFn = new cdk.aws_lambda.Function(
       this,
@@ -89,13 +90,13 @@ export class CronStack extends cdk.NestedStack {
             typeName,
             fieldName,
             isType:
-              typeName !== 'Query' &&
-              typeName !== 'Mutation' &&
-              typeName !== 'Subscription' &&
-              typeName !== 'Cron',
-          }),
+              typeName !== "Query" &&
+              typeName !== "Mutation" &&
+              typeName !== "Subscription" &&
+              typeName !== "Cron",
+          })
         ),
-        handler: 'index.handler',
+        handler: "index.handler",
         architecture: cdk.aws_lambda.Architecture.ARM_64,
         memorySize: 1024,
         // logRetention: cdk.aws_logs.RetentionDays.THREE_MONTHS,
@@ -105,22 +106,10 @@ export class CronStack extends cdk.NestedStack {
           COGNITO_USERPOOL_ID: userPoolId,
           USER_POOL_CLIENT_ID: userPoolClientId,
           IOT_DATA_ENDPOINT: iotDataEndpoint,
-          SECRET_ID: cluster?.secret?.secretArn || '',
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-          MAIL_FROM: env.MAIL_FROM || '',
-          VERIFY_SIGN_UP_PATH: env.VERIFY_SIGN_UP_PATH || '',
-          MAIL_SECRET: env.MAIL_SECRET || '',
-          MAIL_REGION: env.MAIL_REGION || '',
-          AWS_S3_BUCKET_NAME: env.AWS_S3_ASSET_BUCKET_NAME || '',
-          WEBSITE_URL: env.WEBSITE_URL,
-          Environment: env.Environment,
-          SOFTBANK_ENDPOINT_URL: env.SOFTBANK_ENDPOINT_URL,
-          SOFTBANK_MERCHANT_ID: env.SOFTBANK_MERCHANT_ID,
-          SOFTBANK_HASH_KEY: env.SOFTBANK_HASH_KEY,
-          SOFTBANK_SERVICE_ID: env.SOFTBANK_SERVICE_ID,
-          SLACK_WEBHOOK_URL: env.SLACK_WEBHOOK_URL,
+          SECRET_ID: cluster?.secret?.secretArn || "",
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
         },
-      },
+      }
     );
 
     // Grant extra policies to lambda function

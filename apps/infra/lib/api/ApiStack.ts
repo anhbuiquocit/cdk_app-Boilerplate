@@ -1,21 +1,21 @@
 /* eslint-disable no-new */
 /* eslint-disable no-console */
-import * as appsync from '@aws-cdk/aws-appsync-alpha';
-import { Construct } from 'constructs';
-import * as cdk from 'aws-cdk-lib';
-import { mergedSdlPath } from '../helpers/resolverList';
-import { saveStringParameter } from '../helpers/saveStringParameter';
-import { prepareApiStack } from './prepareApiStack';
-import { createLambdaLayers } from './createLambdaLayers';
-import { LambdaStack, ResolverType } from './LambdaStack';
+import * as appsync from "@aws-cdk/aws-appsync-alpha";
+import { Construct } from "constructs";
+import * as cdk from "aws-cdk-lib";
+import { mergedSdlPath } from "../helpers/resolverList";
+import { saveStringParameter } from "../helpers/saveStringParameter";
+import { prepareApiStack } from "./prepareApiStack";
+import { createLambdaLayers } from "./createLambdaLayers";
+import { LambdaStack, ResolverType } from "./LambdaStack";
 import {
   getResolverNames,
   getCronNames,
   getCustomLambFuncs,
-} from '../helpers/resolverList';
-import { EnvApiStack } from '../helpers/envConfig';
-import { CronStack } from './CronStack';
-import { ApiGateWayStack } from './ApiGateWayStack';
+} from "../helpers/resolverList";
+import { EnvVarStack } from "../helpers/envConfig";
+import { CronStack } from "./CronStack";
+import { ApiGateWayStack } from "./ApiGateWayStack";
 
 interface ApiStackProps extends cdk.StackProps {
   appName: string;
@@ -25,14 +25,14 @@ interface ApiStackProps extends cdk.StackProps {
   userPool: cdk.aws_cognito.UserPool;
   iotDataEndpoint: string;
   userPoolClient: cdk.aws_cognito.UserPoolClient;
-  env: EnvApiStack;
+  env: EnvVarStack;
 }
 
 export class ApiStack extends cdk.Stack {
   public static async prepareAndBuild(
     scope: Construct,
     id: string,
-    props: ApiStackProps,
+    props: ApiStackProps
   ): Promise<ApiStack> {
     await prepareApiStack();
     const instance = new ApiStack(scope, id, props);
@@ -99,7 +99,7 @@ export class ApiStack extends cdk.Stack {
     });
     saveStringParameter(instance, {
       parameterName: `/${appName}/AppSyncAPIKey`,
-      stringValue: api.apiKey || '',
+      stringValue: api.apiKey || "",
     });
     return instance;
   }
@@ -124,12 +124,12 @@ export class ApiStack extends cdk.Stack {
     userPoolClient: cdk.aws_cognito.UserPoolClient;
     lambdaLayers: cdk.aws_lambda.LayerVersion[];
     api: appsync.GraphqlApi;
-    env: EnvApiStack;
+    env: EnvVarStack;
   }) {
     // // Create the Lambda functions for each resolver
     const resolvers = getResolverNames();
-    console.log('resolvers: ', resolvers);
-    new cdk.aws_ec2.InterfaceVpcEndpoint(this, 'secrets-manager', {
+    console.log("resolvers: ", resolvers);
+    new cdk.aws_ec2.InterfaceVpcEndpoint(this, "secrets-manager", {
       service: cdk.aws_ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
       vpc,
       privateDnsEnabled: false,
@@ -138,7 +138,7 @@ export class ApiStack extends cdk.Stack {
     });
     const numberOfApisEachStack = 50;
     const numberOfNestStacks = Math.ceil(
-      resolvers.length / numberOfApisEachStack,
+      resolvers.length / numberOfApisEachStack
     );
     const splitApiArray: ResolverType[][] = [];
 
@@ -208,7 +208,7 @@ export class ApiStack extends cdk.Stack {
     // The Lambda authorizer
     // const authorizerLambda = this.createAuthorizerLambda();
     return new appsync.GraphqlApi(this, `${appName}-Api`, {
-      name: 'graceapp-api',
+      name: "graceapp-api",
       schema: appsync.Schema.fromAsset(mergedSdlPath),
       authorizationConfig: {
         defaultAuthorization: {

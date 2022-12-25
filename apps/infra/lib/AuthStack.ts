@@ -7,13 +7,12 @@ import { saveStringParameter } from "./helpers/saveStringParameter";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import path from "path";
+import { EnvVarStack } from "./helpers/envConfig";
 
 const cognitoGroups = ["USER", "ADMIN"];
 interface AuthStackProps extends cdk.StackProps {
   appName: string;
-  env: cdk.Environment & {
-    Environment: string;
-  };
+  env: EnvVarStack;
 }
 export class AuthStack extends cdk.Stack {
   public readonly userPoolClient: cdk.aws_cognito.UserPoolClient;

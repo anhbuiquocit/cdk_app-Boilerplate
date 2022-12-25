@@ -1,9 +1,9 @@
-import * as appsync from '@aws-cdk/aws-appsync-alpha';
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import { getResolverBuildPath } from './getResolverBuildPath';
-import { EnvApiStack } from '../helpers/envConfig';
-import { LambdaDataSource, Resolver } from '@aws-cdk/aws-appsync-alpha';
+import * as appsync from "@aws-cdk/aws-appsync-alpha";
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import { getResolverBuildPath } from "./getResolverBuildPath";
+import { EnvVarStack } from "../helpers/envConfig";
+import { LambdaDataSource, Resolver } from "@aws-cdk/aws-appsync-alpha";
 
 export interface LambdaStackProps extends cdk.NestedStackProps {
   appName: string;
@@ -15,7 +15,7 @@ export interface LambdaStackProps extends cdk.NestedStackProps {
   userPoolClient: cdk.aws_cognito.UserPoolClient;
   lambdaLayers: cdk.aws_lambda.LayerVersion[];
   api: appsync.GraphqlApi;
-  env: EnvApiStack;
+  env: EnvVarStack;
   resolvers: ResolverType[];
 }
 export interface ResolverType {
@@ -76,11 +76,11 @@ export class LambdaStack extends cdk.NestedStack {
     iotDataEndpoint: string;
     userPoolId: string;
     userPoolClientId: string;
-    env: EnvApiStack;
+    env: EnvVarStack;
     resolver: ResolverType;
   }): void {
     // const resolvers = getResolverNames();
-
+    console.log("env: ", env);
     const { typeName, fieldName, policies = [] } = resolver;
     const postFn = new cdk.aws_lambda.Function(
       this,
@@ -96,12 +96,12 @@ export class LambdaStack extends cdk.NestedStack {
             typeName,
             fieldName,
             isType:
-              typeName !== 'Query' &&
-              typeName !== 'Mutation' &&
-              typeName !== 'Subscription',
-          }),
+              typeName !== "Query" &&
+              typeName !== "Mutation" &&
+              typeName !== "Subscription",
+          })
         ),
-        handler: 'index.handler',
+        handler: "index.handler",
         architecture: cdk.aws_lambda.Architecture.ARM_64,
         memorySize: 1024,
         // logRetention: cdk.aws_logs.RetentionDays.THREE_MONTHS,
@@ -111,25 +111,10 @@ export class LambdaStack extends cdk.NestedStack {
           COGNITO_USERPOOL_ID: userPoolId,
           USER_POOL_CLIENT_ID: userPoolClientId,
           IOT_DATA_ENDPOINT: iotDataEndpoint,
-          SECRET_ID: cluster?.secret?.secretArn || '',
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-          MAIL_FROM: env.MAIL_FROM || '',
-          VERIFY_SIGN_UP_PATH: env.VERIFY_SIGN_UP_PATH || '',
-          MAIL_SECRET: env.MAIL_SECRET || '',
-          MAIL_REGION: env.MAIL_REGION || '',
-          AWS_S3_BUCKET_NAME: env.AWS_S3_ASSET_BUCKET_NAME || '',
-          WEBSITE_URL: env.WEBSITE_URL,
-          Environment: env.Environment,
-          CLIENT_ID_CLOUD_SIGN: env.CLIENT_ID_CLOUD_SIGN,
-          CONTENT_TYPE_URL_ENCODED: env.CONTENT_TYPE_URL_ENCODED,
-          RESOURCE_URI_CLOUD_SIGN_TOKEN: env.RESOURCE_URI_CLOUD_SIGN_TOKEN,
-          SOFTBANK_ENDPOINT_URL: env.SOFTBANK_ENDPOINT_URL,
-          SOFTBANK_MERCHANT_ID: env.SOFTBANK_MERCHANT_ID,
-          SOFTBANK_HASH_KEY: env.SOFTBANK_HASH_KEY,
-          SOFTBANK_SERVICE_ID: env.SOFTBANK_SERVICE_ID,
-          SLACK_WEBHOOK_URL: env.SLACK_WEBHOOK_URL,
+          SECRET_ID: cluster?.secret?.secretArn || "",
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
         },
-      },
+      }
     );
 
     // Grant extra policies to lambda function
@@ -163,7 +148,7 @@ export class LambdaStack extends cdk.NestedStack {
       {
         api,
         lambdaFunction: postFn,
-      },
+      }
     );
     new Resolver(this, `${typeName}_${fieldName}_Resolver`, {
       api,

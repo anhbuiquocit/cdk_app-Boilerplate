@@ -1,32 +1,29 @@
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as cdk from 'aws-cdk-lib';
-import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { Stack, StackProps, CfnOutput } from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as cdk from "aws-cdk-lib";
+// import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import {
-  ViewerCertificate,
+  // ViewerCertificate,
   ViewerProtocolPolicy,
   PriceClass,
   OriginAccessIdentity,
   FunctionCode,
   // HttpVersion,
-} from 'aws-cdk-lib/aws-cloudfront';
-import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
+} from "aws-cdk-lib/aws-cloudfront";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
   CfnByteMatchSet,
   // CfnByteMatchSet,
   CfnIPSet,
   CfnRule,
   CfnWebACL,
-} from 'aws-cdk-lib/aws-waf';
-
+} from "aws-cdk-lib/aws-waf";
+import { EnvVarStack } from "./helpers/envConfig";
 interface CICDProps extends StackProps {
   appName: string;
-  env: cdk.Environment & {
-    Environment: string;
-    ARN_ACM_CLOUDFRONT: string;
-  };
+  env: EnvVarStack;
 }
 
 export class CdkFrontend extends Stack {
@@ -45,7 +42,7 @@ export class CdkFrontend extends Stack {
         versioned: false,
         publicReadAccess: false,
         encryption: cdk.aws_s3.BucketEncryption.S3_MANAGED,
-      },
+      }
     );
 
     // create policy for dev-gw environment
@@ -54,133 +51,133 @@ export class CdkFrontend extends Stack {
       `CloudfrontAccess_web_${env.Environment}`,
       {
         comment: `OAI-${WEB_BUCKET.bucketName}`,
-      },
+      }
     );
     const cloudfrontUserAccessPolicy_web = new PolicyStatement();
-    cloudfrontUserAccessPolicy_web.addActions('s3:GetObject');
+    cloudfrontUserAccessPolicy_web.addActions("s3:GetObject");
     cloudfrontUserAccessPolicy_web.addPrincipals(
-      accessIdentity_web.grantPrincipal,
+      accessIdentity_web.grantPrincipal
     );
-    cloudfrontUserAccessPolicy_web.addResources(WEB_BUCKET.arnForObjects('*'));
+    cloudfrontUserAccessPolicy_web.addResources(WEB_BUCKET.arnForObjects("*"));
     WEB_BUCKET.addToResourcePolicy(cloudfrontUserAccessPolicy_web);
 
     // Cloudfront distribution for web admin
-    const ROOT_INDEX_FILE = 'grace-app/index.html';
-    const ROOT_INDEX_FILE_STORYBOOK = 'storybook/index.html';
+    const ROOT_INDEX_FILE = "grace-app/index.html";
+    const ROOT_INDEX_FILE_STORYBOOK = "storybook/index.html";
     // 👇 Point to certificate ARN
-    const cert = Certificate.fromCertificateArn(
-      this,
-      'WebCert',
-      `${env.ARN_ACM_CLOUDFRONT}`,
-    );
+    // const cert = Certificate.fromCertificateArn(
+    //   this,
+    //   "WebCert",
+    //   `${env.ARN_ACM_CLOUDFRONT}`
+    // );
 
     // 👇 Create WAF IP list
-    const listip = new CfnIPSet(this, 'listip', {
-      name: 'listip',
+    const listip = new CfnIPSet(this, "listip", {
+      name: "listip",
       ipSetDescriptors: [
         {
-          type: 'IPV4',
-          value: ' 106.72.42.1/32',
+          type: "IPV4",
+          value: " 106.72.42.1/32",
         },
         {
-          type: 'IPV4',
-          value: '153.240.149.130/32',
+          type: "IPV4",
+          value: "153.240.149.130/32",
         },
         {
-          type: 'IPV4',
-          value: '60.157.85.161/32',
+          type: "IPV4",
+          value: "60.157.85.161/32",
         },
         {
-          type: 'IPV4',
-          value: '113.185.47.240/32',
+          type: "IPV4",
+          value: "113.185.47.240/32",
         },
         {
-          type: 'IPV4',
-          value: '118.70.146.171/32',
+          type: "IPV4",
+          value: "118.70.146.171/32",
         },
         {
-          type: 'IPV4',
-          value: '222.252.25.178/32',
+          type: "IPV4",
+          value: "222.252.25.178/32",
         },
         {
-          type: 'IPV4',
-          value: '118.21.134.211/32',
+          type: "IPV4",
+          value: "118.21.134.211/32",
         },
         {
-          type: 'IPV4',
-          value: '113.20.108.37/32',
+          type: "IPV4",
+          value: "113.20.108.37/32",
         },
         {
-          type: 'IPV4',
-          value: '203.136.39.154/32',
+          type: "IPV4",
+          value: "203.136.39.154/32",
         },
         {
-          type: 'IPV4',
-          value: '118.70.184.62/32',
+          type: "IPV4",
+          value: "118.70.184.62/32",
         },
         {
-          type: 'IPV4',
-          value: '101.99.14.10/32',
+          type: "IPV4",
+          value: "101.99.14.10/32",
         },
         {
-          type: 'IPV6',
-          value: '2400:4050:2560:8f00:b077:7b2f:e1d2:f639/128',
+          type: "IPV6",
+          value: "2400:4050:2560:8f00:b077:7b2f:e1d2:f639/128",
         },
         {
-          type: 'IPV6',
-          value: '2400:4050:2560:8f00:c03a:d05c:4b0:44a7/128',
+          type: "IPV6",
+          value: "2400:4050:2560:8f00:c03a:d05c:4b0:44a7/128",
         },
         {
-          type: 'IPV6',
-          value: '2400:4050:2560:8f00::/64',
+          type: "IPV6",
+          value: "2400:4050:2560:8f00::/64",
         },
       ],
     });
 
     // 👇 Create WAF String Match
-    const path = new CfnByteMatchSet(this, 'path', {
-      name: 'path',
+    const path = new CfnByteMatchSet(this, "path", {
+      name: "path",
       byteMatchTuples: [
         {
           fieldToMatch: {
-            type: 'URI',
+            type: "URI",
           },
-          positionalConstraint: 'STARTS_WITH',
-          textTransformation: 'LOWERCASE',
-          targetString: '/admin',
+          positionalConstraint: "STARTS_WITH",
+          textTransformation: "LOWERCASE",
+          targetString: "/admin",
         },
       ],
     });
     // 👇 Create WAF Rule
-    const rule = new CfnRule(this, 'rule', {
-      metricName: 'rule',
-      name: 'rule',
+    const rule = new CfnRule(this, "rule", {
+      metricName: "rule",
+      name: "rule",
       predicates: [
         {
           dataId: listip.ref,
           negated: true,
-          type: 'IPMatch',
+          type: "IPMatch",
         },
         {
           dataId: path.ref,
           negated: false,
-          type: 'ByteMatch'
-        }
+          type: "ByteMatch",
+        },
       ],
     });
 
     // 👇 Create WAF WebACL
-    const CloudfrontWebACL = new CfnWebACL(this, 'cloudfrontWebACL', {
-      name: 'cloudfrontWebACL',
+    const CloudfrontWebACL = new CfnWebACL(this, "cloudfrontWebACL", {
+      name: "cloudfrontWebACL",
       // scope: "CLOUDFRONT",
-      defaultAction: { type: 'ALLOW' },
-      metricName: 'cloudfrontWebACL',
+      defaultAction: { type: "ALLOW" },
+      metricName: "cloudfrontWebACL",
       rules: [
         {
           priority: 0,
           ruleId: rule.ref,
           action: {
-            type: 'BLOCK',
+            type: "BLOCK",
           },
         },
       ],
@@ -189,7 +186,7 @@ export class CdkFrontend extends Stack {
     // 👇 Cloudfront function
     const cloudfront_web_index_func = new cloudfront.Function(
       this,
-      'cloudfront_web_index_func',
+      "cloudfront_web_index_func",
       {
         code: FunctionCode.fromInline(`
         function handler(event) {
@@ -207,9 +204,9 @@ export class CdkFrontend extends Stack {
           return request;
         }
       `),
-        comment: 'Redirect to index.html at subfolder level',
-        functionName: 'cloudfront_web_index_func',
-      },
+        comment: "Redirect to index.html at subfolder level",
+        functionName: "cloudfront_web_index_func",
+      }
     );
 
     // create cloudfront for environment
@@ -218,9 +215,9 @@ export class CdkFrontend extends Stack {
       `CfDistribution_web_${env.Environment}`,
       {
         comment: `Cloudfront for ${env.Environment} environment`,
-        viewerCertificate: ViewerCertificate.fromAcmCertificate(cert, {
-          aliases: ['gg.gracebank.jp'],
-        }),
+        // viewerCertificate: ViewerCertificate.fromAcmCertificate(cert, {
+        //   aliases: ["gg.botiplate.vn"],
+        // }),
         defaultRootObject: ROOT_INDEX_FILE,
         viewerProtocolPolicy: ViewerProtocolPolicy.ALLOW_ALL,
         // viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -251,11 +248,11 @@ export class CdkFrontend extends Stack {
           {
             errorCode: 403,
             errorCachingMinTtl: 10,
-            responsePagePath: '/grace-app/index.html',
+            responsePagePath: "/grace-app/index.html",
             responseCode: 200,
           },
         ],
-      },
+      }
     );
     const cloudfront_storybook = new cloudfront.CloudFrontWebDistribution(
       this,
@@ -280,7 +277,7 @@ export class CdkFrontend extends Stack {
               {
                 compress: true,
                 isDefaultBehavior: true,
-                pathPattern: 'storybook/*',
+                pathPattern: "storybook/*",
               },
             ],
           },
@@ -289,11 +286,11 @@ export class CdkFrontend extends Stack {
           {
             errorCode: 403,
             errorCachingMinTtl: 10,
-            responsePagePath: '/storybook/index.html',
+            responsePagePath: "/storybook/index.html",
             responseCode: 200,
           },
         ],
-      },
+      }
     );
 
     // create cfnoutput for web

@@ -1,12 +1,11 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { saveStringParameter } from "./helpers/saveStringParameter";
+import { EnvVarStack } from "./helpers/envConfig";
 
 interface AccountsStackProps extends cdk.StackProps {
   appName: string;
-  env: cdk.Environment & {
-    Environment: string;
-  };
+  env: EnvVarStack;
 }
 
 export class AccountsStack extends cdk.Stack {
