@@ -6,6 +6,6 @@
     "module": "commonjs",
     "target": "esnext",
     "sourceMap": true,
-    "outDir": "../infra/build/lambdas"
+    "outDir": "../infra/build/lambdas",
   }
 }

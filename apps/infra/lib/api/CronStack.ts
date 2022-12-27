@@ -11,7 +11,6 @@ export interface CronStackProps extends cdk.NestedStackProps {
   privateSg: cdk.aws_ec2.SecurityGroup;
   cluster: cdk.aws_rds.ServerlessCluster;
   userPool: cdk.aws_cognito.UserPool;
-  iotDataEndpoint: string;
   userPoolClient: cdk.aws_cognito.UserPoolClient;
   lambdaLayers: cdk.aws_lambda.LayerVersion[];
   env: EnvVarStack;
@@ -32,7 +31,6 @@ export class CronStack extends cdk.NestedStack {
       privateSg,
       lambdaLayers,
       cluster,
-      iotDataEndpoint,
       userPool,
       userPoolClient,
       env,
@@ -44,7 +42,6 @@ export class CronStack extends cdk.NestedStack {
         privateSg,
         lambdaLayers,
         cluster,
-        iotDataEndpoint,
         userPoolId: userPool.userPoolId,
         userPoolClientId: userPoolClient.userPoolClientId,
         env,
@@ -57,7 +54,6 @@ export class CronStack extends cdk.NestedStack {
     privateSg,
     lambdaLayers,
     cluster,
-    iotDataEndpoint,
     userPoolId,
     userPoolClientId,
     env,
@@ -67,7 +63,6 @@ export class CronStack extends cdk.NestedStack {
     privateSg: cdk.aws_ec2.SecurityGroup;
     cluster: cdk.aws_rds.ServerlessCluster;
     lambdaLayers: cdk.aws_lambda.LayerVersion[];
-    iotDataEndpoint: string;
     userPoolId: string;
     userPoolClientId: string;
     env: EnvVarStack;
@@ -81,7 +76,7 @@ export class CronStack extends cdk.NestedStack {
       `${typeName}_${fieldName}_cron`,
       {
         vpc,
-        vpcSubnets: { subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_NAT },
+        vpcSubnets: { subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS },
         securityGroups: [privateSg],
         runtime: cdk.aws_lambda.Runtime.NODEJS_14_X,
         layers: lambdaLayers,
@@ -105,7 +100,6 @@ export class CronStack extends cdk.NestedStack {
         environment: {
           COGNITO_USERPOOL_ID: userPoolId,
           USER_POOL_CLIENT_ID: userPoolClientId,
-          IOT_DATA_ENDPOINT: iotDataEndpoint,
           SECRET_ID: cluster?.secret?.secretArn || "",
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
         },

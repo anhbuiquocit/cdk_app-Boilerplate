@@ -11,7 +11,6 @@ export interface LambdaStackProps extends cdk.NestedStackProps {
   privateSg: cdk.aws_ec2.SecurityGroup;
   cluster: cdk.aws_rds.ServerlessCluster;
   userPool: cdk.aws_cognito.UserPool;
-  iotDataEndpoint: string;
   userPoolClient: cdk.aws_cognito.UserPoolClient;
   lambdaLayers: cdk.aws_lambda.LayerVersion[];
   api: appsync.GraphqlApi;
@@ -35,7 +34,6 @@ export class LambdaStack extends cdk.NestedStack {
       lambdaLayers,
       cluster,
       api,
-      iotDataEndpoint,
       userPool,
       userPoolClient,
       env,
@@ -48,7 +46,6 @@ export class LambdaStack extends cdk.NestedStack {
         lambdaLayers,
         cluster,
         api,
-        iotDataEndpoint,
         userPoolId: userPool.userPoolId,
         userPoolClientId: userPoolClient.userPoolClientId,
         env,
@@ -62,7 +59,6 @@ export class LambdaStack extends cdk.NestedStack {
     lambdaLayers,
     cluster,
     api,
-    iotDataEndpoint,
     userPoolId,
     userPoolClientId,
     env,
@@ -73,7 +69,6 @@ export class LambdaStack extends cdk.NestedStack {
     cluster: cdk.aws_rds.ServerlessCluster;
     lambdaLayers: cdk.aws_lambda.LayerVersion[];
     api: appsync.GraphqlApi;
-    iotDataEndpoint: string;
     userPoolId: string;
     userPoolClientId: string;
     env: EnvVarStack;
@@ -87,7 +82,7 @@ export class LambdaStack extends cdk.NestedStack {
       `${typeName}_${fieldName}`,
       {
         vpc,
-        vpcSubnets: { subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_NAT },
+        vpcSubnets: { subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS },
         securityGroups: [privateSg],
         runtime: cdk.aws_lambda.Runtime.NODEJS_14_X,
         layers: lambdaLayers,
@@ -110,7 +105,6 @@ export class LambdaStack extends cdk.NestedStack {
         environment: {
           COGNITO_USERPOOL_ID: userPoolId,
           USER_POOL_CLIENT_ID: userPoolClientId,
-          IOT_DATA_ENDPOINT: iotDataEndpoint,
           SECRET_ID: cluster?.secret?.secretArn || "",
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
         },

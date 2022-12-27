@@ -17,7 +17,7 @@
     "prettier": "latest"
   },
   "engines": {
-    "node": "16.17.1",
+    "node": "16.14.0",
     "yarn": "3.2.0"
   },
   "packageManager": "yarn@3.2.0",
@@ -26,6 +26,7 @@
     "@types/node": "^18.8.3",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "@yarnpkg/plugin-interactive-tools": "^4.0.0-rc.34",
     "husky": "^8.0.1",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",

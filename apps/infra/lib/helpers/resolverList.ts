@@ -210,7 +210,7 @@ export const getCustomLambFuncs = (): FuncType[] => {
   return funcList;
 };
 export const getResolverNames = (): ResolverConfigType[] => {
-  const { Queries, Mutations, Subscriptions, Types } =
+  const { Queries, Mutations, Subscriptions } =
     extractOperationNamesFromSDL({
       path: mergedSdlPath,
     });
@@ -236,16 +236,16 @@ export const getResolverNames = (): ResolverConfigType[] => {
     });
     resolverList.push(res);
   });
-  Types.forEach((type) => {
-    type.fieldNames.forEach((fieldName) => {
-      const res = checkResolverHandlerFileExists({
-        typeName: type.name,
-        fieldName: fieldName,
-      });
+  // Types.forEach((type) => {
+  //   type.fieldNames.forEach((fieldName) => {
+  //     const res = checkResolverHandlerFileExists({
+  //       typeName: type.name,
+  //       fieldName: fieldName,
+  //     });
 
-      resolverList.push(res);
-    });
-  });
+  //     resolverList.push(res);
+  //   });
+  // });
 
   return resolverList.sort((a, b) => a.createdAt - b.createdAt);
 };

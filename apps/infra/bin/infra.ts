@@ -35,11 +35,6 @@ const getConfig = (app: cdk.App): BuildConfig => {
     App: ensureString(unparsedEnv, "App"),
     Environment: ensureString(unparsedEnv, "Environment"),
     bastionSshKeyName: ensureString(unparsedEnv, "bastionSshKeyName"),
-    tempIotCoreThingCertificateArn: ensureString(
-      unparsedEnv,
-      "tempIotCoreThingCertificateArn"
-    ),
-    iotDataEndpoint: ensureString(unparsedEnv, "iotDataEndpoint"),
   };
 
   return buildConfig;
@@ -84,7 +79,6 @@ const main1 = async (): Promise<void> => {
     dbCluster: dataStack.dbCluster,
     userPool: authStack.userPool,
     userPoolClient: authStack.userPoolClient,
-    iotDataEndpoint: buildConfig.iotDataEndpoint,
   });
 
   AccountsStack.prepareBuild(app, `${mainStackName}-AccountsStack`, {

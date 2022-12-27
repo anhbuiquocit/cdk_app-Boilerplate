@@ -6,8 +6,8 @@ export interface BuildConfig {
 
   readonly App: string;
   readonly Environment: string;
-  readonly tempIotCoreThingCertificateArn: string;
-  readonly iotDataEndpoint: string;
+  readonly tempIotCoreThingCertificateArn?: string;
+  readonly iotDataEndpoint?: string;
 }
 
 export interface BuildParameters {

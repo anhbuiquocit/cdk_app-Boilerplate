@@ -1,7 +1,0 @@
-## NOT AUTHENTICATE
-type PageInfo @aws_cognito_user_pools @aws_api_key {
-  startCursor: String
-  endCursor: String
-  hasPreviousPage: Boolean!
-  hasNextPage: Boolean!
-}

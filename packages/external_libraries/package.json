@@ -6,7 +6,9 @@
     "clean": "rm -rf .turbo && rm -rf node_modules"
   },
   "dependencies": {
+    "amazon-cognito-identity-js": "^6.1.1",
     "aws-sdk": "2.1171.0",
+    "axios": "^1.2.1",
     "moment": "^2.29.4"
   },
   "devDependencies": {

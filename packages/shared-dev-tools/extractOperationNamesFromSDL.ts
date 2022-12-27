@@ -1,22 +1,22 @@
 import { parse, visit } from 'graphql';
 import fs from 'fs';
 
-const getDirectories = (source: string) =>
-  fs
-    .readdirSync(source, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name);
+// const getDirectories = (source: string) =>
+//   fs
+//     .readdirSync(source, { withFileTypes: true })
+//     .filter((dirent) => dirent.isDirectory())
+//     .map((dirent) => dirent.name);
 
-type ObjectType = {
-  name: string;
-  fieldNames: string[];
-};
+// type ObjectType = {
+//   name: string;
+//   fieldNames: string[];
+// };
 
 export function extractOperationNamesFromSDL({ path }: { path: string }): {
   Queries: string[];
   Mutations: string[];
   Subscriptions: string[];
-  Types: ObjectType[];
+  // Types: ObjectType[];
 } {
   // load from a single schema file
   // const schema = await loadSchema(
@@ -25,20 +25,20 @@ export function extractOperationNamesFromSDL({ path }: { path: string }): {
   //     loaders: [new GraphQLFileLoader()],
   //   },
   // );
-  const typeNames = getDirectories('../../apps/lambdas/Type');
+  // const typeNames = getDirectories('../../apps/lambdas/Type');
   const graphqlString = fs.readFileSync(path, 'utf8');
 
   const ast = parse(graphqlString);
   const Queries: string[] = [];
   const Mutations: string[] = [];
   const Subscriptions: string[] = [];
-  const Types: ObjectType[] = typeNames.map((typeName) => {
-    const fieldNames = getDirectories(`../../apps/lambdas/Type/${typeName}`);
-    return {
-      name: typeName,
-      fieldNames,
-    };
-  });
+  // const Types: ObjectType[] = typeNames.map((typeName) => {
+  //   const fieldNames = getDirectories(`../../apps/lambdas/Type/${typeName}`);
+  //   return {
+  //     name: typeName,
+  //     fieldNames,
+  //   };
+  // });
   visit(ast, {
     // tslint:disable-next-line:function-name
     FieldDefinition: {
@@ -64,6 +64,6 @@ export function extractOperationNamesFromSDL({ path }: { path: string }): {
     Queries,
     Mutations,
     Subscriptions,
-    Types,
+    // Types,
   };
 }

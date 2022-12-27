@@ -23,7 +23,6 @@ interface ApiStackProps extends cdk.StackProps {
   privateSg: cdk.aws_ec2.SecurityGroup;
   dbCluster: cdk.aws_rds.ServerlessCluster;
   userPool: cdk.aws_cognito.UserPool;
-  iotDataEndpoint: string;
   userPoolClient: cdk.aws_cognito.UserPoolClient;
   env: EnvVarStack;
 }
@@ -43,7 +42,6 @@ export class ApiStack extends cdk.Stack {
       dbCluster,
       userPool,
       appName,
-      iotDataEndpoint,
       userPoolClient,
       env,
     } = props;
@@ -62,7 +60,6 @@ export class ApiStack extends cdk.Stack {
       dbCluster,
       lambdaLayers,
       api,
-      iotDataEndpoint,
       userPool,
       userPoolClient,
       env,
@@ -110,7 +107,6 @@ export class ApiStack extends cdk.Stack {
     dbCluster,
     lambdaLayers,
     api,
-    iotDataEndpoint,
     userPool,
     userPoolClient,
     env,
@@ -120,7 +116,6 @@ export class ApiStack extends cdk.Stack {
     privateSg: cdk.aws_ec2.SecurityGroup;
     dbCluster: cdk.aws_rds.ServerlessCluster;
     userPool: cdk.aws_cognito.UserPool;
-    iotDataEndpoint: string;
     userPoolClient: cdk.aws_cognito.UserPoolClient;
     lambdaLayers: cdk.aws_lambda.LayerVersion[];
     api: appsync.GraphqlApi;
@@ -133,7 +128,7 @@ export class ApiStack extends cdk.Stack {
       service: cdk.aws_ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
       vpc,
       privateDnsEnabled: false,
-      subnets: { subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_NAT },
+      subnets: { subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroups: [privateSg],
     });
     const numberOfApisEachStack = 50;
@@ -162,7 +157,6 @@ export class ApiStack extends cdk.Stack {
         lambdaLayers,
         cluster: dbCluster,
         api,
-        iotDataEndpoint,
         userPool,
         userPoolClient,
         env,
@@ -176,7 +170,6 @@ export class ApiStack extends cdk.Stack {
       privateSg,
       lambdaLayers,
       cluster: dbCluster,
-      iotDataEndpoint,
       userPool,
       userPoolClient,
       env,
@@ -189,7 +182,6 @@ export class ApiStack extends cdk.Stack {
       privateSg,
       lambdaLayers,
       cluster: dbCluster,
-      iotDataEndpoint,
       userPool,
       userPoolClient,
       env,

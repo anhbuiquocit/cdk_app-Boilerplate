@@ -54,7 +54,7 @@ export class NetworkStack extends cdk.Stack {
         {
           cidrMask: 22,
           name: "private1",
-          subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_NAT,
+          subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
         },
         {
           cidrMask: 22,

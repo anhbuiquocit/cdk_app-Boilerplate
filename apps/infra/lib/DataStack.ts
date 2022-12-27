@@ -52,7 +52,7 @@ export class DataStack extends cdk.Stack {
         subnetGroupName: `${env.Environment}-aurora-grace-bank-subnet-group`,
         vpcSubnets: {
           onePerAz: true,
-          subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_NAT,
+          subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
         },
         removalPolicy: cdk.RemovalPolicy.DESTROY,
         description: "An all private subnets group for the DB",
