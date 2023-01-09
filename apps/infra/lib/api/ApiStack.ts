@@ -200,7 +200,7 @@ export class ApiStack extends cdk.Stack {
     // The Lambda authorizer
     // const authorizerLambda = this.createAuthorizerLambda();
     return new appsync.GraphqlApi(this, `${appName}-Api`, {
-      name: "graceapp-api",
+      name: "boilerapp-api",
       schema: appsync.Schema.fromAsset(mergedSdlPath),
       authorizationConfig: {
         defaultAuthorization: {

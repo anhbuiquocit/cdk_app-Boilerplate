@@ -10,7 +10,8 @@
     "lint": "eslint --quiet --fix ./",
     "cdk": "cdk",
     "cdk-dev": "yarn cdk -c config=dev --profile=dev --verbose",
-    "deploy-all": "yarn cdk-dev deploy --all --require-approval never"
+    "deploy-all": "yarn cdk-dev deploy --all --require-approval never",
+    "destroy-all":"yarn cdk-dev destroy --all --require-approval never"
   },
   "author": "",
   "license": "ISC",

@@ -72,11 +72,11 @@ export class AccountsStack extends cdk.Stack {
 
     AccountsStack.createCloudwatchLogGroup({
       scope: instance,
-      logGroupName: `web-logs-grace-dev-gw`,
+      logGroupName: `web-logs-boilerapp-dev-gw`,
     });
     AccountsStack.createCloudwatchLogGroup({
       scope: instance,
-      logGroupName: `web-logs-grace-gw`,
+      logGroupName: `web-logs-boilerapp-gw`,
     });
 
     const accessKey = new cdk.aws_iam.CfnAccessKey(

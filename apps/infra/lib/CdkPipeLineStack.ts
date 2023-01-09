@@ -29,7 +29,7 @@ export class CICDInfraStack extends Stack {
 
     const { appName, env } = props;
     // Define  context
-    const reponame = this.node.tryGetContext("reponame") || "grace-web";
+    const reponame = this.node.tryGetContext("reponame") || "boilerapp";
     const prd_branchname = this.node.tryGetContext("prd_branch") || "develop";
     // const dev_branchname = this.node.tryGetContext('dev_branch') || 'develop';
     // const dev_gw_branchname =
@@ -152,12 +152,12 @@ export class CICDInfraStack extends Stack {
               project: buildbackend,
               environmentVariables: {
                 ACCESS_KEY: {
-                  value: "/cdk-grace-bank/ACCESS_KEY",
+                  value: "/boiler-app/ACCESS_KEY",
                   type: cdk.aws_codebuild.BuildEnvironmentVariableType
                     .PARAMETER_STORE,
                 },
                 SECRET_KEY: {
-                  value: "/cdk-grace-bank/SECRET_KEY",
+                  value: "/boiler-app/SECRET_KEY",
                   type: cdk.aws_codebuild.BuildEnvironmentVariableType
                     .PARAMETER_STORE,
                 },

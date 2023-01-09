@@ -14,10 +14,10 @@ import {
 } from "aws-cdk-lib/aws-cloudfront";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
-  CfnByteMatchSet,
   // CfnByteMatchSet,
-  CfnIPSet,
-  CfnRule,
+  // CfnByteMatchSet,
+  // CfnIPSet,
+  // CfnRule,
   CfnWebACL,
 } from "aws-cdk-lib/aws-waf";
 import { EnvVarStack } from "./helpers/envConfig";
@@ -62,7 +62,7 @@ export class CdkFrontend extends Stack {
     WEB_BUCKET.addToResourcePolicy(cloudfrontUserAccessPolicy_web);
 
     // Cloudfront distribution for web admin
-    const ROOT_INDEX_FILE = "grace-app/index.html";
+    const ROOT_INDEX_FILE = "web/index.html";
     const ROOT_INDEX_FILE_STORYBOOK = "storybook/index.html";
     // 👇 Point to certificate ARN
     // const cert = Certificate.fromCertificateArn(
@@ -72,99 +72,99 @@ export class CdkFrontend extends Stack {
     // );
 
     // 👇 Create WAF IP list
-    const listip = new CfnIPSet(this, "listip", {
-      name: "listip",
-      ipSetDescriptors: [
-        {
-          type: "IPV4",
-          value: " 106.72.42.1/32",
-        },
-        {
-          type: "IPV4",
-          value: "153.240.149.130/32",
-        },
-        {
-          type: "IPV4",
-          value: "60.157.85.161/32",
-        },
-        {
-          type: "IPV4",
-          value: "113.185.47.240/32",
-        },
-        {
-          type: "IPV4",
-          value: "118.70.146.171/32",
-        },
-        {
-          type: "IPV4",
-          value: "222.252.25.178/32",
-        },
-        {
-          type: "IPV4",
-          value: "118.21.134.211/32",
-        },
-        {
-          type: "IPV4",
-          value: "113.20.108.37/32",
-        },
-        {
-          type: "IPV4",
-          value: "203.136.39.154/32",
-        },
-        {
-          type: "IPV4",
-          value: "118.70.184.62/32",
-        },
-        {
-          type: "IPV4",
-          value: "101.99.14.10/32",
-        },
-        {
-          type: "IPV6",
-          value: "2400:4050:2560:8f00:b077:7b2f:e1d2:f639/128",
-        },
-        {
-          type: "IPV6",
-          value: "2400:4050:2560:8f00:c03a:d05c:4b0:44a7/128",
-        },
-        {
-          type: "IPV6",
-          value: "2400:4050:2560:8f00::/64",
-        },
-      ],
-    });
+    // const listip = new CfnIPSet(this, "listip", {
+    //   name: "listip",
+    //   ipSetDescriptors: [
+    //     {
+    //       type: "IPV4",
+    //       value: " 106.72.42.1/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "153.240.149.130/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "60.157.85.161/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "113.185.47.240/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "118.70.146.171/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "222.252.25.178/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "118.21.134.211/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "113.20.108.37/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "203.136.39.154/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "118.70.184.62/32",
+    //     },
+    //     {
+    //       type: "IPV4",
+    //       value: "101.99.14.10/32",
+    //     },
+    //     {
+    //       type: "IPV6",
+    //       value: "2400:4050:2560:8f00:b077:7b2f:e1d2:f639/128",
+    //     },
+    //     {
+    //       type: "IPV6",
+    //       value: "2400:4050:2560:8f00:c03a:d05c:4b0:44a7/128",
+    //     },
+    //     {
+    //       type: "IPV6",
+    //       value: "2400:4050:2560:8f00::/64",
+    //     },
+    //   ],
+    // });
 
     // 👇 Create WAF String Match
-    const path = new CfnByteMatchSet(this, "path", {
-      name: "path",
-      byteMatchTuples: [
-        {
-          fieldToMatch: {
-            type: "URI",
-          },
-          positionalConstraint: "STARTS_WITH",
-          textTransformation: "LOWERCASE",
-          targetString: "/admin",
-        },
-      ],
-    });
+    // const path = new CfnByteMatchSet(this, "path", {
+    //   name: "path",
+    //   byteMatchTuples: [
+    //     {
+    //       fieldToMatch: {
+    //         type: "URI",
+    //       },
+    //       positionalConstraint: "STARTS_WITH",
+    //       textTransformation: "LOWERCASE",
+    //       targetString: "/admin",
+    //     },
+    //   ],
+    // });
     // 👇 Create WAF Rule
-    const rule = new CfnRule(this, "rule", {
-      metricName: "rule",
-      name: "rule",
-      predicates: [
-        {
-          dataId: listip.ref,
-          negated: true,
-          type: "IPMatch",
-        },
-        {
-          dataId: path.ref,
-          negated: false,
-          type: "ByteMatch",
-        },
-      ],
-    });
+    // const rule = new CfnRule(this, "rule", {
+    //   metricName: "rule",
+    //   name: "rule",
+    //   predicates: [
+    //     {
+    //       dataId: listip.ref,
+    //       negated: true,
+    //       type: "IPMatch",
+    //     },
+    //     {
+    //       dataId: path.ref,
+    //       negated: false,
+    //       type: "ByteMatch",
+    //     },
+    //   ],
+    // });
 
     // 👇 Create WAF WebACL
     const CloudfrontWebACL = new CfnWebACL(this, "cloudfrontWebACL", {
@@ -172,15 +172,15 @@ export class CdkFrontend extends Stack {
       // scope: "CLOUDFRONT",
       defaultAction: { type: "ALLOW" },
       metricName: "cloudfrontWebACL",
-      rules: [
-        {
-          priority: 0,
-          ruleId: rule.ref,
-          action: {
-            type: "BLOCK",
-          },
-        },
-      ],
+      // rules: [
+      //   {
+      //     priority: 0,
+      //     ruleId: rule.ref,
+      //     action: {
+      //       type: "BLOCK",
+      //     },
+      //   },
+      // ],
     });
 
     // 👇 Cloudfront function
@@ -248,7 +248,7 @@ export class CdkFrontend extends Stack {
           {
             errorCode: 403,
             errorCachingMinTtl: 10,
-            responsePagePath: "/grace-app/index.html",
+            responsePagePath: "/web/index.html",
             responseCode: 200,
           },
         ],
@@ -260,7 +260,7 @@ export class CdkFrontend extends Stack {
       {
         comment: `Cloudfront for storybook ${env.Environment} environment`,
         // viewerCertificate: ViewerCertificate.fromAcmCertificate(cert, {
-        //   aliases: ['staging.gracebank.jp'],
+        //   aliases: ['subdomain.com'],
         // }),
         defaultRootObject: ROOT_INDEX_FILE_STORYBOOK,
         viewerProtocolPolicy: ViewerProtocolPolicy.ALLOW_ALL,

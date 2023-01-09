@@ -7,9 +7,4 @@ type Account @aws_cognito_user_pools {
   accountName: String!
   lastLogin: String
   isActive: Boolean!
-  role: Role!
-  user: User
-  affiliatedClinic: AffiliatedClinic
-  admin: Admin
-  stem: StemCell
 }

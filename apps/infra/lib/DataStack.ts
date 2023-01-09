@@ -49,7 +49,7 @@ export class DataStack extends cdk.Stack {
       `${appName}-${env.Environment}-rds-subnet-group`,
       {
         vpc,
-        subnetGroupName: `${env.Environment}-aurora-grace-bank-subnet-group`,
+        subnetGroupName: `${env.Environment}-aurora-boiler-app-subnet-group`,
         vpcSubnets: {
           onePerAz: true,
           subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
@@ -78,7 +78,7 @@ export class DataStack extends cdk.Stack {
         scaling: {
           // autoPause: cdk.Duration.seconds(0),
           minCapacity: 2,
-          maxCapacity: 2,
+          maxCapacity: 4,
         },
         securityGroups: [privateSg],
         removalPolicy: cdk.RemovalPolicy.DESTROY,

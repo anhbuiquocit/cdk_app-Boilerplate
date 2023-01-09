@@ -28,7 +28,7 @@
     "@aws-cdk/core:target-partitions": ["aws", "aws-cn"],
     "region": "ap-southeast-1",
     "dev": {
-      "AWSAccountID": "360394993805",
+      "AWSAccountID": "454189528349",
       "App": "boilerplate-app",
       "bastionSshKeyName": "boilerplate_bastion_dev",
       "Environment": "dev"
